@@ -1,17 +1,18 @@
 import path from 'node:path';
-import pino from 'pino';
+import { TransportTargetOptions } from 'pino';
 import { Config } from '../../schema/config';
 
-export function getFileTransport(log: Config['log']) {
-  return pino.transport({
+export function getFileTransport(log: Config['log']): TransportTargetOptions<Record<string, any>> {
+  return {
     target: 'pino-roll',
     options: {
-      file: path.join(process.cwd(), log.file!.path), // Base filename
-      frequency: log.file!.frequency, // or 'hourly', '10m'
-      mkdir: true, // Auto-create directories
-      size: log.file!.size, // Rotate if file exceeds size
-      limit: { count: log.file!.limit }, // Keep last 7 files
-      extension: log.file!.extension, // Optional file extension
+      file: path.join(process.cwd(), log.file!.path),
+      frequency: log.file!.frequency,
+      mkdir: true,
+      size: log.file!.size,
+      limit: { count: log.file!.limit },
+      extension: log.file!.extension,
     },
-  });
+    level: log.level,
+  };
 }
