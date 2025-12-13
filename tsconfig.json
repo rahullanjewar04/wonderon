@@ -106,6 +106,5 @@
   },
   "include": [
     "src/**/*",
-    "src/types.d.ts"
   ]
 }

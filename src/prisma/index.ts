@@ -16,9 +16,12 @@ export class PrismaWrapper {
       const adapter = new PrismaBetterSqlite3({
         url: dbUrl,
       });
-      PrismaWrapper.instance = new PrismaClient({
+
+      const instance = new PrismaClient({
         adapter,
       });
+
+      PrismaWrapper.instance = instance;
     }
     return PrismaWrapper.instance;
   }
