@@ -13,7 +13,8 @@
     "circular": "dpdm --tree false --exit-code circular:1 src/index.ts"
   },
   "dependencies": {
-    "@types/node": "25.0.0",
+    "@prisma/adapter-better-sqlite3": "7.1.0",
+    "@prisma/client": "7.1.0",
     "express": "4.21.2",
     "jsonwebtoken": "9.0.2",
     "p-map": "4.0",
@@ -21,15 +22,19 @@
     "pino": "10.1.0",
     "pino-roll": "4.0.0",
     "redis": "4.7.0",
+    "sqlite3": "5.1.7",
     "zod": "4.1.13"
   },
   "devDependencies": {
     "@types/express": "5.0.6",
+    "@types/node": "25.0.0",
     "dotenv": "17.2.3",
     "dpdm": "3.14.0",
     "eslint": "9.39.1",
     "eslint-config-prettier": "10.1.8",
     "prettier": "3.7.4",
+    "prisma": "7.1.0",
+    "prisma-json-types-generator": "4.0.0-beta.2",
     "tsx": "4.21.0",
     "typescript": "5.9.3",
     "typescript-eslint": "8.49.0"

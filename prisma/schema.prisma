@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+generator json {
+  provider = "prisma-json-types-generator"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  settings  Settings?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  auditLogs AuditLog[] @relation("AuditLog_actor")
+
+  @@map("users")
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  actorId   Int? // Nullable for server actions
+  action    String
+  table     String
+  recordId  Int
+  oldData   Json?
+  newData   Json?
+  changes   Json
+  timestamp DateTime @default(now())
+
+  actor User? @relation("AuditLog_actor", fields: [actorId], references: [id])
+
+  @@map("audit_logs")
+}
+
+model Settings {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique // One-to-one constraint
+  user      User     @relation(fields: [userId], references: [id])
+  /// [AuditSettings]
+  auditLog  Json     @default("{\"retention\":{\"days\":30}}")
+  // Can have multiple settings as well
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}

@@ -2,19 +2,22 @@ import express from 'express';
 import http from 'http';
 import { Logger } from './logger';
 import { AppConfig } from './config';
+import { PrismaWrapper } from './prisma';
 
 void (async () => {
   const config = AppConfig.getInstance();
   const logger = Logger.getInstance(config.log);
+  PrismaWrapper.getInstance(config.dbUrl);
 
   const app = express();
 
+  // Low level http server for handling os signals
   const httpServer = http.createServer(app);
   httpServer.listen(config.port, function () {
     logger.info('Server is running on port: ' + config.port);
   });
 
-  //handle OS signals for graceful exit
+  //handle OS signals for graceful exit.
   [`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`].forEach((eventType) => {
     process.on(eventType, (...args) => {
       if (httpServer.listening) {
