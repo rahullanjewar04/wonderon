@@ -47,7 +47,7 @@ model Settings {
   user      User     @relation(fields: [userId], references: [id])
   /// [AuditSettings]
   auditLog  Json     @default("{\"retention\":{\"days\":30}}")
-  // Can have multiple settings as well
+  // Can have other settings for that user. Normally users would be a part of tenant so setting should be linked to a tenant
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
