@@ -1,4 +1,6 @@
+import { readFileSync } from 'node:fs';
 import { Config, schema } from '../../schema/config';
+import path from 'node:path';
 
 export class AppConfig {
   static config: Config;
@@ -11,40 +13,28 @@ export class AppConfig {
   }
 
   static loadConfig(): Config {
-    const env = process.env as any;
+    try {
+      const env = process.env as any;
+      const configFile = readFileSync(path.join(process.cwd(), 'config.example.json'), 'utf-8');
+      const appConfig = JSON.parse(configFile);
 
-    const config = {
-      port: ~~env.PORT,
-      env: env.NODE_ENV,
-      jwt: {
+      appConfig.env = env.NODE_ENV;
+      appConfig.dbUrl = env.DB_URL;
+      appConfig.jwt = {
         secret: env.JWT_SECRET,
-      },
-      log: {
-        level: env.LOG_LEVEL,
-        transport: env.LOG_TRANSPORT,
-        file:
-          env.LOG_TRANSPORT === 'file'
-            ? {
-                frequency: env.LOG_FILE_FREQUENCY,
-                path: env.LOG_FILE_PATH,
-                size: env.LOG_FILE_SIZE,
-                limit: ~~env.LOG_FILE_LIMIT,
-                extension: env.LOG_FILE_EXTENSION,
-              }
-            : undefined,
-        logtail:
-          env.LOG_TRANSPORT === 'logtail'
-            ? {
-                sourceToken: env.LOG_LOGTAIL_SOURCE_TOKEN,
-              }
-            : undefined,
-      },
-      dbUrl: env.DB_URL,
-    };
+      };
+      appConfig.redis = {
+        url: `redis://${env.REDIS_USERNAME}:${env.REDIS_PASSWORD}@${appConfig.redis.host}`,
+      };
 
-    // Validate
-    const data = schema.parse(config);
+      // Validate
+      const data = schema.parse(appConfig);
 
-    return data;
+      console.log('CONFIG', data);
+      return data;
+    } catch (e) {
+      console.error('Error loading config', e);
+      throw e;
+    }
   }
 }

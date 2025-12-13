@@ -4,14 +4,12 @@ import { Config } from '../../../schema/config';
 
 export function getTransport(log: Config['log']): TransportTargetOptions<Record<string, any>> {
   return {
-    target: 'pino-roll',
+    target: 'pino-elasticsearch',
     options: {
-      file: path.join(process.cwd(), log.file!.path),
-      frequency: log.file!.frequency,
-      mkdir: true,
-      size: log.file!.size,
-      limit: { count: log.file!.count },
-      extension: log.file!.extension,
+      index: log.elasticSearch!.index,
+      node: log.elasticSearch!.node,
+      esVersion: log.elasticSearch!.esVersion,
+      flushBytes: log.elasticSearch!.flushBytes,
     },
     level: log.level,
   };

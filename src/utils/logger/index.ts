@@ -1,7 +1,8 @@
-import pino, { TransportMultiOptions, TransportTargetOptions } from 'pino';
-import { Config } from '../schema/config';
-import { getLogTailTransport } from './transports/logtail';
-import { getFileTransport } from './transports/file';
+import pino, { TransportTargetOptions } from 'pino';
+import { getTransport as getLogtailTransport } from './transports/logtail';
+import { getTransport as getFileTransport } from './transports/file';
+import { getTransport as getElasticSearchTransport } from './transports/elastic-search';
+import { Config } from '../../schema/config';
 
 export class Logger {
   static instance: pino.Logger;
@@ -18,6 +19,7 @@ export class Logger {
   }
 
   static createLogger(log: Config['log']) {
+    // Always write to console by default.
     const targets: TransportTargetOptions<Record<string, any>>[] = [
       {
         target: 'pino/file',
@@ -26,13 +28,30 @@ export class Logger {
       },
     ];
 
-    if (log.transport === 'file') {
-      targets.push(getFileTransport(log));
-    }
+    // Add more transports, as per config
+    log.transports.forEach((transport) => {
+      let target: TransportTargetOptions<Record<string, any>> | undefined;
 
-    if (log.transport === 'logtail') {
-      targets.push(getLogTailTransport(log.logtail!.sourceToken));
-    }
+      switch (transport) {
+        case 'file':
+          target = getFileTransport(log);
+          break;
+        case 'logtail':
+          target = getLogtailTransport(log.logtail!.sourceToken);
+          break;
+        // Shouldn't reach here as we have zod validations but adding default just in case.
+        case 'elasticsearch':
+          target = getElasticSearchTransport(log);
+          break;
+        default:
+          throw new Error('Invalid logger transport');
+      }
+
+      // Only add transport if defined
+      if (target) {
+        targets.push(target);
+      }
+    });
 
     const logger = pino({
       transport: {

@@ -1,6 +1,6 @@
-import pino from 'pino';
+import pino, { TransportTargetOptions } from 'pino';
 
-export function getLogTailTransport(sourceToken: string) {
+export function getTransport(sourceToken: string): TransportTargetOptions<Record<string, any>> {
   return pino.transport({
     target: '@logtail/pino',
     options: {

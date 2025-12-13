@@ -1,0 +1,35 @@
+{
+  "deployment": "server",
+  "port": 1337,
+  "serverUrl": "http://localhost:1337",
+  "log": {
+    "level": "info",
+    "transports": [
+      "file"
+    ],
+    "file": {
+      "frequency": "daily",
+      "path": "./logs/app.log",
+      "size": "10M",
+      "count": 7,
+      "extension": ".log"
+    }
+  },
+  "s3": {
+    "region": "us-east-1",
+    "bucket": "default",
+    "host": "localhost:9000"
+  },
+  "ratelimit": {
+    "enabled": true,
+    "windowMs": 3600000,
+    "max": 100,
+    "whitelist": [
+      "127.0.0.1",
+      "::1"
+    ]
+  },
+  "redis": {
+    "host": "localhost:6379"
+  }
+}
