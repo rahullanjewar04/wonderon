@@ -1,8 +1,8 @@
 import express from 'express';
 import http from 'http';
-import { Logger } from './logger';
-import { AppConfig } from './config';
-import { PrismaWrapper } from './prisma';
+import { PrismaWrapper } from './utils/prisma';
+import { AppConfig } from './utils/config';
+import { Logger } from './utils/logger';
 
 void (async () => {
   const config = AppConfig.getInstance();

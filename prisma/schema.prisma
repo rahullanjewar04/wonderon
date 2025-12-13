@@ -1,11 +1,11 @@
 generator client {
   provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  output   = "../src/utils/prisma/generated"
 }
 
 generator json {
   provider = "prisma-json-types-generator"
-  output   = "../src/generated/prisma"
+  output   = "../src/utils/prisma/generated"
 }
 
 datasource db {

@@ -1,4 +1,4 @@
-import { Config, schema } from '../schema/config';
+import { Config, schema } from '../../schema/config';
 
 export class AppConfig {
   static config: Config;
