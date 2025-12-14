@@ -1,40 +1,46 @@
+// config/AppConfig.ts
 import { readFileSync } from 'node:fs';
-import { Config, schema } from '../../schema/config';
+import { Config, schema } from 'schema/config';
 import path from 'node:path';
 
 export class AppConfig {
-  static config: Config;
+  private static instance: Config | null = null;
 
-  static getInstance() {
-    if (!AppConfig.config) {
-      AppConfig.config = this.loadConfig();
-    }
-    return AppConfig.config;
+  private constructor() {
+    // Private constructor prevents direct instantiation
   }
 
-  static loadConfig(): Config {
+  static getInstance(): Config {
+    if (!AppConfig.instance) {
+      AppConfig.instance = AppConfig.loadConfig();
+    }
+    return AppConfig.instance;
+  }
+
+  private static loadConfig(): Config {
     try {
       const env = process.env as any;
-      const configFile = readFileSync(path.join(process.cwd(), 'config.example.json'), 'utf-8');
+      const configFile = readFileSync(path.join(process.cwd(), 'config.json'), 'utf-8');
       const appConfig = JSON.parse(configFile);
 
-      appConfig.env = env.NODE_ENV;
-      appConfig.dbUrl = env.DB_URL;
-      appConfig.encryptionKey = env.ENCRYPTION_KEY;
+      // Override with environment variables
+      appConfig.env = env.NODE_ENV || appConfig.env;
+      appConfig.dbUrl = env.DB_URL || appConfig.dbUrl;
+      appConfig.encryptionKey = env.ENCRYPTION_KEY || appConfig.encryptionKey;
       appConfig.jwt = {
-        secret: env.JWT_SECRET,
+        secret: env.JWT_SECRET || appConfig.jwt.secret,
       };
       appConfig.redis = {
-        url: `redis://${env.REDIS_USERNAME}:${env.REDIS_PASSWORD}@${appConfig.redis.host}`,
+        ...appConfig.redis,
+        url: env.REDIS_URL || `redis://${env.REDIS_USERNAME}:${env.REDIS_PASSWORD}@${appConfig.redis.host}`,
       };
 
       // Validate the config
       const data = schema.parse(appConfig);
-
       return data;
     } catch (e) {
-      console.error('Error loading config', e);
-      throw e;
+      console.error('Error loading config:', e);
+      throw new Error(`Config validation failed: ${(e as Error).message}`);
     }
   }
 }

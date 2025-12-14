@@ -1,7 +1,14 @@
 // prisma/prismaWrapper.ts
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { PrismaClient } from './generated/client';
-import { AuditService } from '../../services/audit-log';
+import { AuditService } from 'services/audit-log';
+
+const modelTables: Record<string, string> = {
+  User: 'user',
+  Book: 'book',
+  Settings: 'settings',
+  AuditLog: 'auditLog',
+};
 
 export class PrismaWrapper {
   private static instance: PrismaClient | null = null;
@@ -38,7 +45,7 @@ export class PrismaWrapper {
           },
 
           async update({ model, args, query }) {
-            const tableName = auditService.getTableName(model);
+            const tableName = modelTables[model];
             const oldRecord = await (client as any)[tableName].findUnique({ where: args.where });
             const result = await query(args); // Fix: Execute first, capture result
             await auditService.logUpdate(model, args.where.id!, oldRecord, result);
@@ -51,11 +58,8 @@ export class PrismaWrapper {
            * @param {function} query - The delete function to execute.
            * @returns {Promise<object>} - The deleted record.
            */
-
-          /*************  ✨ Windsurf Command ⭐  *************/
-          /*******  d40fa15f-ead3-4ad5-b627-dda4454afbd4  *******/
           async delete({ model, args, query }) {
-            const tableName = auditService.getTableName(model);
+            const tableName = modelTables[model];
             const oldRecord = await (client as any)[tableName].findUnique({ where: args.where });
             const result = await query(args); // Fix: Capture deleted record
             await auditService.logDelete(model, oldRecord!.id!); // Fix: Use oldRecord.id

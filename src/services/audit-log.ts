@@ -1,6 +1,6 @@
-import { als } from '../utils/async-local-storage';
-import { deepDiffRight } from '../utils/deep-diff';
-import { PrismaClient } from '../utils/prisma/generated/client';
+import { als } from 'utils/async-local-storage';
+import { deepDiffRight } from 'utils/deep-diff';
+import { PrismaClient } from 'utils/prisma/generated/client';
 
 interface AuditConfigDetails {
   track: boolean;
@@ -16,7 +16,7 @@ const auditConfig: Record<string, AuditConfigDetails> = {
 export class AuditService {
   constructor(private client: PrismaClient) {}
 
-  // ✅ IMMUTABLE: Returns NEW object, doesn't touch original
+  // Returns NEW object, doesn't touch original
   private sanitizeData(data: any, redactKeys: string[], excludeKeys: string[]): any {
     if (data === null || typeof data !== 'object') return data;
 
@@ -49,7 +49,7 @@ export class AuditService {
 
   async logCreate(model: string, entityId: string, data: any) {
     const context = als.getStore()!;
-    const sanitizedData = this.maybeSanitize(model, data); // ✅ Clone + sanitize
+    const sanitizedData = this.maybeSanitize(model, data); // Clone + sanitize
 
     await this.client.auditLog.create({
       data: {
