@@ -1,4 +1,3 @@
-import { destination } from 'pino';
 import z from 'zod';
 
 export const schema = z.strictObject({
@@ -8,6 +7,7 @@ export const schema = z.strictObject({
   jwt: z.strictObject({
     secret: z.string().min(1),
   }),
+  encryptionKey: z.string().min(1),
 
   // Should be coming from config file
   deployment: z.enum(['server', 'api']),

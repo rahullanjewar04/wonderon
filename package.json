@@ -7,7 +7,8 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "tsx -r dotenv/config --inspect src/server.ts",
+    "dev:verify": "chmod +x ./scripts/verify.sh && ./scripts/verify.sh",
+    "dev": "npm run dev:verify && tsx -r dotenv/config --inspect src/server.ts",
     "start": "node lib/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "circular": "dpdm --tree false --exit-code circular:1 src/index.ts"

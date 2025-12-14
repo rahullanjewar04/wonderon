@@ -20,6 +20,7 @@ export class AppConfig {
 
       appConfig.env = env.NODE_ENV;
       appConfig.dbUrl = env.DB_URL;
+      appConfig.encryptionKey = env.ENCRYPTION_KEY;
       appConfig.jwt = {
         secret: env.JWT_SECRET,
       };
@@ -27,7 +28,7 @@ export class AppConfig {
         url: `redis://${env.REDIS_USERNAME}:${env.REDIS_PASSWORD}@${appConfig.redis.host}`,
       };
 
-      // Validate
+      // Validate the config
       const data = schema.parse(appConfig);
 
       return data;

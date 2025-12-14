@@ -6,11 +6,14 @@ import { Logger } from './utils/logger';
 import { apiRouter } from './api/router';
 import { errorHandler } from './api/common/middlewares/error-handler';
 import { requestContextMiddleware } from './api/common/middlewares/request-context';
+import { CryptoService } from './utils/encrpytion';
 
 void (async () => {
   const config = AppConfig.getInstance();
+
   const logger = Logger.getInstance(config.log);
   PrismaWrapper.getInstance(config.dbUrl);
+  CryptoService.getInstance(config.encryptionKey);
 
   const app = express();
 
@@ -18,10 +21,6 @@ void (async () => {
 
   app.get('/health', (req, res) => {
     res.send('OK');
-  });
-
-  app.get('/asd', (req, res) => {
-    throw new Error('test');
   });
 
   app.use('/api', apiRouter);

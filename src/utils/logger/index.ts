@@ -3,7 +3,7 @@ import { getTransport as getLogtailTransport } from './transports/logtail';
 import { getTransport as getFileTransport } from './transports/file';
 import { getTransport as getElasticSearchTransport } from './transports/elastic-search';
 import { Config } from '../../schema/config';
-import { als, getContext } from '../async-local-storage';
+import { getContext } from '../async-local-storage';
 
 export class Logger {
   private static instance: pino.Logger;
