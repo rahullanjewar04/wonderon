@@ -9,7 +9,7 @@
     ],
     "file": {
       "frequency": "daily",
-      "path": "./logs/app.log",
+      "destination": "./logs",
       "size": "10M",
       "count": 7,
       "extension": ".log"

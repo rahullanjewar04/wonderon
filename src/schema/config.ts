@@ -1,3 +1,4 @@
+import { destination } from 'pino';
 import z from 'zod';
 
 export const schema = z.strictObject({
@@ -20,7 +21,7 @@ export const schema = z.strictObject({
       file: z
         .strictObject({
           frequency: z.enum(['hourly', 'daily', 'weekly', 'monthly', 'yearly']),
-          path: z.string().min(1),
+          destination: z.string().min(1),
           size: z.string().min(1),
           count: z.number().min(1),
           extension: z.string().min(1),

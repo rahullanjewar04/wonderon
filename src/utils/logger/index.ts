@@ -3,22 +3,12 @@ import { getTransport as getLogtailTransport } from './transports/logtail';
 import { getTransport as getFileTransport } from './transports/file';
 import { getTransport as getElasticSearchTransport } from './transports/elastic-search';
 import { Config } from '../../schema/config';
+import { als, getContext } from '../async-local-storage';
 
 export class Logger {
-  static instance: pino.Logger;
+  private static instance: pino.Logger;
 
-  static getInstance(log?: Config['log']) {
-    if (!Logger.instance) {
-      if (!log) {
-        throw new Error('Logger is not initialized');
-      }
-
-      Logger.instance = this.createLogger(log);
-    }
-    return Logger.instance;
-  }
-
-  static createLogger(log: Config['log']) {
+  private static buildTargets(log: Config['log']) {
     // Always write to console by default.
     const targets: TransportTargetOptions<Record<string, any>>[] = [
       {
@@ -53,12 +43,38 @@ export class Logger {
       }
     });
 
+    return targets;
+  }
+
+  private static createLogger(log: Config['log']) {
     const logger = pino({
+      level: log.level,
+      base: { service: 'book-app', version: '1.0.0' },
+      timestamp: pino.stdTimeFunctions.isoTime,
       transport: {
-        targets,
+        targets: this.buildTargets(log),
       },
     });
 
+    logger.info(`Created logger with transports ${log.transports}`);
     return logger;
+  }
+
+  public static getInstance(log?: Config['log']) {
+    if (!Logger.instance) {
+      if (!log) {
+        throw new Error('Logger is not initialized');
+      }
+
+      Logger.instance = this.createLogger(log);
+    }
+
+    const context = getContext();
+
+    if (!context) {
+      return Logger.instance;
+    }
+
+    return Logger.instance.child(context);
   }
 }

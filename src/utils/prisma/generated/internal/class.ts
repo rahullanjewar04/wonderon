@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.1.0",
   "engineVersion": "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba",
   "activeProvider": "sqlite",
-  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../src/utils/prisma/generated\"\n}\n\ngenerator json {\n  provider = \"prisma-json-types-generator\"\n  output   = \"../src/utils/prisma/generated\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n}\n\nmodel User {\n  id        Int       @id @default(autoincrement())\n  name      String\n  email     String    @unique\n  settings  Settings?\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n\n  auditLogs AuditLog[] @relation(\"AuditLog_actor\")\n\n  @@map(\"users\")\n}\n\nmodel AuditLog {\n  id        Int      @id @default(autoincrement())\n  actorId   Int? // Nullable for server actions\n  action    String\n  table     String\n  recordId  Int\n  oldData   Json?\n  newData   Json?\n  changes   Json\n  timestamp DateTime @default(now())\n\n  actor User? @relation(\"AuditLog_actor\", fields: [actorId], references: [id])\n\n  @@map(\"audit_logs\")\n}\n\nmodel Settings {\n  id        Int      @id @default(autoincrement())\n  userId    Int      @unique // One-to-one constraint\n  user      User     @relation(fields: [userId], references: [id])\n  /// [AuditSettings]\n  auditLog  Json     @default(\"{\\\"retention\\\":{\\\"days\\\":30}}\")\n  // Can have multiple settings as well\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@map(\"settings\")\n}\n",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../src/utils/prisma/generated\"\n}\n\ngenerator json {\n  provider = \"prisma-json-types-generator\"\n  output   = \"../src/utils/prisma/generated\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n}\n\nmodel User {\n  id           String     @id @default(uuid())\n  createdAt    DateTime   @default(now())\n  updatedAt    DateTime   @updatedAt\n  name         String\n  email        String     @unique\n  role         String\n  credentials  String\n  settings     Settings?\n  auditLogs    AuditLog[] @relation(\"AuditLog_actor\")\n  createdBooks Book[]     @relation(\"Book_createdBy\")\n  updatedBooks Book[]     @relation(\"Book_updatedBy\")\n  bookId       String?\n\n  @@map(\"users\")\n}\n\nmodel Book {\n  id            String   @id @default(uuid())\n  createdAt     DateTime @default(now())\n  updatedAt     DateTime @updatedAt\n  title         String\n  authors       String\n  createdByUser User     @relation(\"Book_createdBy\", fields: [createdBy], references: [id])\n  createdBy     String\n  updatedByUser User?    @relation(\"Book_updatedBy\", fields: [updatedBy], references: [id])\n  updatedBy     String?\n  publishedBy   String\n\n  @@map(\"books\")\n}\n\nmodel Settings {\n  id        String   @id @default(uuid())\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  userId    String   @unique // One-to-one constraint\n  user      User     @relation(fields: [userId], references: [id])\n  /// [AuditSettings]\n  auditLog  Json     @default(\"{\\\"retention\\\":{\\\"days\\\":30}}\")\n  // Can have other settings for that user. Normally users would be a part of tenant so setting should be linked to a tenant\n\n  @@map(\"settings\")\n}\n\nmodel AuditLog {\n  id        String   @id @default(uuid())\n  timestamp DateTime @default(now())\n  entity    String\n  entityId  String\n  action    String\n  diff      Json?\n  requestId String\n  ip        String\n  actorId   String? // Nullable for server actions\n  actor     User?    @relation(\"AuditLog_actor\", fields: [actorId], references: [id])\n  master    Boolean\n\n  @@map(\"audit_logs\")\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -28,7 +28,7 @@ const config: runtime.GetPrismaClientConfig = {
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"settings\",\"kind\":\"object\",\"type\":\"Settings\",\"relationName\":\"SettingsToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"auditLogs\",\"kind\":\"object\",\"type\":\"AuditLog\",\"relationName\":\"AuditLog_actor\"}],\"dbName\":\"users\"},\"AuditLog\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"actorId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"action\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"table\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"recordId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"oldData\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"newData\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"changes\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"timestamp\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"actor\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AuditLog_actor\"}],\"dbName\":\"audit_logs\"},\"Settings\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SettingsToUser\"},{\"name\":\"auditLog\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"settings\"}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"credentials\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"settings\",\"kind\":\"object\",\"type\":\"Settings\",\"relationName\":\"SettingsToUser\"},{\"name\":\"auditLogs\",\"kind\":\"object\",\"type\":\"AuditLog\",\"relationName\":\"AuditLog_actor\"},{\"name\":\"createdBooks\",\"kind\":\"object\",\"type\":\"Book\",\"relationName\":\"Book_createdBy\"},{\"name\":\"updatedBooks\",\"kind\":\"object\",\"type\":\"Book\",\"relationName\":\"Book_updatedBy\"},{\"name\":\"bookId\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":\"users\"},\"Book\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"authors\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdByUser\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"Book_createdBy\"},{\"name\":\"createdBy\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"updatedByUser\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"Book_updatedBy\"},{\"name\":\"updatedBy\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"publishedBy\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":\"books\"},\"Settings\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SettingsToUser\"},{\"name\":\"auditLog\",\"kind\":\"scalar\",\"type\":\"Json\"}],\"dbName\":\"settings\"},\"AuditLog\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"timestamp\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"entity\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"entityId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"action\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"diff\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"requestId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ip\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"actorId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"actor\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AuditLog_actor\"},{\"name\":\"master\",\"kind\":\"scalar\",\"type\":\"Boolean\"}],\"dbName\":\"audit_logs\"}},\"enums\":{},\"types\":{}}")
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
   const { Buffer } = await import('node:buffer')
@@ -185,14 +185,14 @@ export interface PrismaClient<
   get user(): Prisma.UserDelegate<ExtArgs, { omit: OmitOpts }>;
 
   /**
-   * `prisma.auditLog`: Exposes CRUD operations for the **AuditLog** model.
+   * `prisma.book`: Exposes CRUD operations for the **Book** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more AuditLogs
-    * const auditLogs = await prisma.auditLog.findMany()
+    * // Fetch zero or more Books
+    * const books = await prisma.book.findMany()
     * ```
     */
-  get auditLog(): Prisma.AuditLogDelegate<ExtArgs, { omit: OmitOpts }>;
+  get book(): Prisma.BookDelegate<ExtArgs, { omit: OmitOpts }>;
 
   /**
    * `prisma.settings`: Exposes CRUD operations for the **Settings** model.
@@ -203,6 +203,16 @@ export interface PrismaClient<
     * ```
     */
   get settings(): Prisma.SettingsDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.auditLog`: Exposes CRUD operations for the **AuditLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AuditLogs
+    * const auditLogs = await prisma.auditLog.findMany()
+    * ```
+    */
+  get auditLog(): Prisma.AuditLogDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {

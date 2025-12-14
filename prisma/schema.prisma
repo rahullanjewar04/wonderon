@@ -13,43 +13,62 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  name      String
-  email     String    @unique
-  settings  Settings?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  auditLogs AuditLog[] @relation("AuditLog_actor")
+  id           String     @id @default(uuid())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  name         String
+  email        String     @unique
+  role         String
+  credentials  String
+  settings     Settings?
+  auditLogs    AuditLog[] @relation("AuditLog_actor")
+  createdBooks Book[]     @relation("Book_createdBy")
+  updatedBooks Book[]     @relation("Book_updatedBy")
+  bookId       String?
 
   @@map("users")
 }
 
-model AuditLog {
-  id        Int      @id @default(autoincrement())
-  actorId   Int? // Nullable for server actions
-  action    String
-  table     String
-  recordId  Int
-  oldData   Json?
-  newData   Json?
-  changes   Json
-  timestamp DateTime @default(now())
+model Book {
+  id            String   @id @default(uuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  title         String
+  authors       String
+  createdByUser User     @relation("Book_createdBy", fields: [createdBy], references: [id])
+  createdBy     String
+  updatedByUser User?    @relation("Book_updatedBy", fields: [updatedBy], references: [id])
+  updatedBy     String?
+  publishedBy   String
 
-  actor User? @relation("AuditLog_actor", fields: [actorId], references: [id])
-
-  @@map("audit_logs")
+  @@map("books")
 }
 
 model Settings {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @unique // One-to-one constraint
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String   @unique // One-to-one constraint
   user      User     @relation(fields: [userId], references: [id])
   /// [AuditSettings]
   auditLog  Json     @default("{\"retention\":{\"days\":30}}")
   // Can have other settings for that user. Normally users would be a part of tenant so setting should be linked to a tenant
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
   @@map("settings")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  timestamp DateTime @default(now())
+  entity    String
+  entityId  String
+  action    String
+  diff      Json?
+  requestId String
+  ip        String
+  actorId   String? // Nullable for server actions
+  actor     User?    @relation("AuditLog_actor", fields: [actorId], references: [id])
+  master    Boolean
+
+  @@map("audit_logs")
 }

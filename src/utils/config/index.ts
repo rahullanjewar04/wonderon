@@ -30,7 +30,6 @@ export class AppConfig {
       // Validate
       const data = schema.parse(appConfig);
 
-      console.log('CONFIG', data);
       return data;
     } catch (e) {
       console.error('Error loading config', e);

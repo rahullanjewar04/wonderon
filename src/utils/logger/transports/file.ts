@@ -3,10 +3,13 @@ import { TransportTargetOptions } from 'pino';
 import { Config } from '../../../schema/config';
 
 export function getTransport(log: Config['log']): TransportTargetOptions<Record<string, any>> {
+  const dir = path.join(process.cwd(), log.file!.destination);
+  const file = path.join(dir, `app.log`);
+
   return {
     target: 'pino-roll',
     options: {
-      file: path.join(process.cwd(), log.file!.path),
+      file,
       frequency: log.file!.frequency,
       mkdir: true,
       size: log.file!.size,

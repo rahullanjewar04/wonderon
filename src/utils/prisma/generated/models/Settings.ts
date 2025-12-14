@@ -22,76 +22,54 @@ export type SettingsModel = runtime.Types.Result.DefaultSelection<Prisma.$Settin
 
 export type AggregateSettings = {
   _count: SettingsCountAggregateOutputType | null
-  _avg: SettingsAvgAggregateOutputType | null
-  _sum: SettingsSumAggregateOutputType | null
   _min: SettingsMinAggregateOutputType | null
   _max: SettingsMaxAggregateOutputType | null
 }
 
-export type SettingsAvgAggregateOutputType = {
-  id: number | null
-  userId: number | null
-}
-
-export type SettingsSumAggregateOutputType = {
-  id: number | null
-  userId: number | null
-}
-
 export type SettingsMinAggregateOutputType = {
-  id: number | null
-  userId: number | null
+  id: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  userId: string | null
 }
 
 export type SettingsMaxAggregateOutputType = {
-  id: number | null
-  userId: number | null
+  id: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  userId: string | null
 }
 
 export type SettingsCountAggregateOutputType = {
   id: number
-  userId: number
-  auditLog: number
   createdAt: number
   updatedAt: number
+  userId: number
+  auditLog: number
   _all: number
 }
 
 
-export type SettingsAvgAggregateInputType = {
-  id?: true
-  userId?: true
-}
-
-export type SettingsSumAggregateInputType = {
-  id?: true
-  userId?: true
-}
-
 export type SettingsMinAggregateInputType = {
   id?: true
-  userId?: true
   createdAt?: true
   updatedAt?: true
+  userId?: true
 }
 
 export type SettingsMaxAggregateInputType = {
   id?: true
-  userId?: true
   createdAt?: true
   updatedAt?: true
+  userId?: true
 }
 
 export type SettingsCountAggregateInputType = {
   id?: true
-  userId?: true
-  auditLog?: true
   createdAt?: true
   updatedAt?: true
+  userId?: true
+  auditLog?: true
   _all?: true
 }
 
@@ -133,18 +111,6 @@ export type SettingsAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inter
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: SettingsAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: SettingsSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: SettingsMinAggregateInputType
@@ -175,21 +141,17 @@ export type SettingsGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   _count?: SettingsCountAggregateInputType | true
-  _avg?: SettingsAvgAggregateInputType
-  _sum?: SettingsSumAggregateInputType
   _min?: SettingsMinAggregateInputType
   _max?: SettingsMaxAggregateInputType
 }
 
 export type SettingsGroupByOutputType = {
-  id: number
-  userId: number
-  auditLog:PrismaJson.AuditSettings
+  id: string
   createdAt: Date
   updatedAt: Date
+  userId: string
+  auditLog:PrismaJson.AuditSettings
   _count: SettingsCountAggregateOutputType | null
-  _avg: SettingsAvgAggregateOutputType | null
-  _sum: SettingsSumAggregateOutputType | null
   _min: SettingsMinAggregateOutputType | null
   _max: SettingsMaxAggregateOutputType | null
 }
@@ -213,109 +175,110 @@ export type SettingsWhereInput = {
   AND?: Prisma.SettingsWhereInput | Prisma.SettingsWhereInput[]
   OR?: Prisma.SettingsWhereInput[]
   NOT?: Prisma.SettingsWhereInput | Prisma.SettingsWhereInput[]
-  id?: Prisma.IntFilter<"Settings"> | number
-  userId?: Prisma.IntFilter<"Settings"> | number
-  auditLog?: Prisma.JsonFilter<"Settings">
+  id?: Prisma.StringFilter<"Settings"> | string
   createdAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
+  userId?: Prisma.StringFilter<"Settings"> | string
+  auditLog?: Prisma.JsonFilter<"Settings">
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
 export type SettingsOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
-  auditLog?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
+  auditLog?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
 }
 
 export type SettingsWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
-  userId?: number
+  id?: string
+  userId?: string
   AND?: Prisma.SettingsWhereInput | Prisma.SettingsWhereInput[]
   OR?: Prisma.SettingsWhereInput[]
   NOT?: Prisma.SettingsWhereInput | Prisma.SettingsWhereInput[]
-  auditLog?: Prisma.JsonFilter<"Settings">
   createdAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
+  auditLog?: Prisma.JsonFilter<"Settings">
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "userId">
 
 export type SettingsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
-  auditLog?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
+  auditLog?: Prisma.SortOrder
   _count?: Prisma.SettingsCountOrderByAggregateInput
-  _avg?: Prisma.SettingsAvgOrderByAggregateInput
   _max?: Prisma.SettingsMaxOrderByAggregateInput
   _min?: Prisma.SettingsMinOrderByAggregateInput
-  _sum?: Prisma.SettingsSumOrderByAggregateInput
 }
 
 export type SettingsScalarWhereWithAggregatesInput = {
   AND?: Prisma.SettingsScalarWhereWithAggregatesInput | Prisma.SettingsScalarWhereWithAggregatesInput[]
   OR?: Prisma.SettingsScalarWhereWithAggregatesInput[]
   NOT?: Prisma.SettingsScalarWhereWithAggregatesInput | Prisma.SettingsScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Settings"> | number
-  userId?: Prisma.IntWithAggregatesFilter<"Settings"> | number
-  auditLog?: Prisma.JsonWithAggregatesFilter<"Settings">
+  id?: Prisma.StringWithAggregatesFilter<"Settings"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Settings"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Settings"> | Date | string
+  userId?: Prisma.StringWithAggregatesFilter<"Settings"> | string
+  auditLog?: Prisma.JsonWithAggregatesFilter<"Settings">
 }
 
 export type SettingsCreateInput = {
-  auditLog?:PrismaJson.AuditSettings
+  id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  auditLog?:PrismaJson.AuditSettings
   user: Prisma.UserCreateNestedOneWithoutSettingsInput
 }
 
 export type SettingsUncheckedCreateInput = {
-  id?: number
-  userId: number
-  auditLog?:PrismaJson.AuditSettings
+  id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  userId: string
+  auditLog?:PrismaJson.AuditSettings
 }
 
 export type SettingsUpdateInput = {
-  auditLog?:PrismaJson.AuditSettings
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  auditLog?:PrismaJson.AuditSettings
   user?: Prisma.UserUpdateOneRequiredWithoutSettingsNestedInput
 }
 
 export type SettingsUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
-  auditLog?:PrismaJson.AuditSettings
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  auditLog?:PrismaJson.AuditSettings
 }
 
 export type SettingsCreateManyInput = {
-  id?: number
-  userId: number
-  auditLog?:PrismaJson.AuditSettings
+  id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  userId: string
+  auditLog?:PrismaJson.AuditSettings
 }
 
 export type SettingsUpdateManyMutationInput = {
-  auditLog?:PrismaJson.AuditSettings
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  auditLog?:PrismaJson.AuditSettings
 }
 
 export type SettingsUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
-  auditLog?:PrismaJson.AuditSettings
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  auditLog?:PrismaJson.AuditSettings
 }
 
 export type SettingsNullableScalarRelationFilter = {
@@ -325,33 +288,23 @@ export type SettingsNullableScalarRelationFilter = {
 
 export type SettingsCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
-  auditLog?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type SettingsAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  auditLog?: Prisma.SortOrder
 }
 
 export type SettingsMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
 }
 
 export type SettingsMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type SettingsSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
 }
 
@@ -388,16 +341,17 @@ export type SettingsUncheckedUpdateOneWithoutUserNestedInput = {
 }
 
 export type SettingsCreateWithoutUserInput = {
-  auditLog?:PrismaJson.AuditSettings
+  id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  auditLog?:PrismaJson.AuditSettings
 }
 
 export type SettingsUncheckedCreateWithoutUserInput = {
-  id?: number
-  auditLog?:PrismaJson.AuditSettings
+  id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  auditLog?:PrismaJson.AuditSettings
 }
 
 export type SettingsCreateOrConnectWithoutUserInput = {
@@ -417,56 +371,57 @@ export type SettingsUpdateToOneWithWhereWithoutUserInput = {
 }
 
 export type SettingsUpdateWithoutUserInput = {
-  auditLog?:PrismaJson.AuditSettings
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  auditLog?:PrismaJson.AuditSettings
 }
 
 export type SettingsUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  auditLog?:PrismaJson.AuditSettings
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  auditLog?:PrismaJson.AuditSettings
 }
 
 
 
 export type SettingsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  userId?: boolean
-  auditLog?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  userId?: boolean
+  auditLog?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["settings"]>
 
 export type SettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  userId?: boolean
-  auditLog?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  userId?: boolean
+  auditLog?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["settings"]>
 
 export type SettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  userId?: boolean
-  auditLog?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  userId?: boolean
+  auditLog?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["settings"]>
 
 export type SettingsSelectScalar = {
   id?: boolean
-  userId?: boolean
-  auditLog?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  userId?: boolean
+  auditLog?: boolean
 }
 
-export type SettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "auditLog" | "createdAt" | "updatedAt", ExtArgs["result"]["settings"]>
+export type SettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "userId" | "auditLog", ExtArgs["result"]["settings"]>
 export type SettingsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -483,14 +438,14 @@ export type $SettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     user: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
-    userId: number
+    id: string
+    createdAt: Date
+    updatedAt: Date
+    userId: string
     /**
      * [AuditSettings]
      */
     auditLog:PrismaJson.AuditSettings
-    createdAt: Date
-    updatedAt: Date
   }, ExtArgs["result"]["settings"]>
   composites: {}
 }
@@ -915,11 +870,11 @@ export interface Prisma__SettingsClient<T, Null = never, ExtArgs extends runtime
  * Fields of the Settings model
  */
 export interface SettingsFieldRefs {
-  readonly id: Prisma.FieldRef<"Settings", 'Int'>
-  readonly userId: Prisma.FieldRef<"Settings", 'Int'>
-  readonly auditLog: Prisma.FieldRef<"Settings", 'Json'>
+  readonly id: Prisma.FieldRef<"Settings", 'String'>
   readonly createdAt: Prisma.FieldRef<"Settings", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Settings", 'DateTime'>
+  readonly userId: Prisma.FieldRef<"Settings", 'String'>
+  readonly auditLog: Prisma.FieldRef<"Settings", 'Json'>
 }
     
 
