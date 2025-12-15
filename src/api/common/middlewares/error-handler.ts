@@ -29,7 +29,26 @@ export async function errorHandler(
   // Handle app errors
   if (err instanceof AppError) {
     const e = err as AppError;
-    return res.status(err.code).json({
+    let httpCode = 400;
+
+    switch (e.code) {
+      case AppError.UNAUTHORIZED:
+        httpCode = 401;
+        break;
+      case AppError.FORBIDDEN:
+        httpCode = 403;
+        break;
+      case AppError.NOT_FOUND:
+        httpCode = 404;
+        break;
+      case AppError.VALIDATION_ERROR:
+        httpCode = 400;
+        break;
+      default:
+        break;
+    }
+
+    return res.status(httpCode).json({
       error: {
         code: e.code,
         message: e.message,

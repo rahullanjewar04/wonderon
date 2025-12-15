@@ -1,7 +1,8 @@
+import { Prisma } from '@utils/prisma/generated/client';
 import z from 'zod';
 
 export const schema = z.strictObject({
-  entity: z.enum(['USER', 'BOOK']),
+  entity: z.enum(Prisma.ModelName),
   entityId: z.string().min(1),
   action: z.enum(['CREATE', 'UPDATE', 'DELETE']),
   diff: z.record(z.any(), z.any()).optional(),
@@ -27,7 +28,7 @@ const listSortKeys = Object.keys(listFilters.shape) as ListSortKeys[];
 // Create Zod enum from keys
 const listSortEnum = z.enum(listSortKeys);
 
-export const listSchema = z.strictObject({
+export const listLogsSchema = z.strictObject({
   filters: listFilters.optional(),
   take: z.number().min(1).max(100).default(10),
   sort: z.strictObject({
@@ -38,4 +39,4 @@ export const listSchema = z.strictObject({
 });
 
 export type AuditLog = z.infer<typeof schema>;
-export type AuditLogList = z.infer<typeof listSchema>;
+export type AuditLogList = z.infer<typeof listLogsSchema>;

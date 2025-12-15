@@ -1,3 +1,7 @@
 import { Router } from 'express';
 
-export const userRouter = Router();
+export function getUserRouter() {
+  const userRouter = Router();
+
+  return userRouter;
+}

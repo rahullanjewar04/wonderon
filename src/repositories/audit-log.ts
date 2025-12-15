@@ -42,10 +42,6 @@ export class AuditLogRepository extends BaseRepository {
         if (payload.filters.from) args.where!['timestamp'].gte = payload.filters.from;
         if (payload.filters.to) args.where!['timestamp'].lte = payload.filters.to;
       }
-
-      if (payload.filters.fieldsChanged) {
-        args.where!['diff'] = {};
-      }
     }
 
     return await this.prismaClient.auditLog.findMany({

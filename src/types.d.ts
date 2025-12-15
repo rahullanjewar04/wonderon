@@ -12,7 +12,7 @@ declare global {
   }
 
   namespace Express {
-    interface Request {
+    export interface Request {
       user: {
         id: string;
         name: string;

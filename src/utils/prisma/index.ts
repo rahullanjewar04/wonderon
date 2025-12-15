@@ -1,7 +1,9 @@
 // prisma/prismaWrapper.ts
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { PrismaClient } from './generated/client';
-import { AuditService } from 'services/audit-log';
+import { AuditLogService } from 'services/audit-log';
+import pino from 'pino';
+import { AuditLogRepository } from 'repositories/audit-log';
 
 enum Entity {
   USER = 'user',
@@ -15,19 +17,27 @@ const modelTables: Record<string, string> = {
 
 export class PrismaWrapper {
   private static instance: PrismaClient | null = null;
-  private static auditService: AuditService | null = null;
+  private static auditService: AuditLogService | null = null;
 
-  static getInstance(dbUrl?: string) {
+  static getInstance(dbUrl?: string, logger?: pino.Logger) {
     if (!PrismaWrapper.instance) {
       if (!dbUrl) {
         throw new Error('dbUrl is required for initial Prisma setup');
+      }
+
+      if (!logger) {
+        throw new Error('logger is required for initial Prisma setup');
       }
 
       const adapter = new PrismaBetterSqlite3({ url: dbUrl });
       const client = new PrismaClient({ adapter });
 
       PrismaWrapper.instance = client;
-      PrismaWrapper.auditService = new AuditService(client);
+
+      const auditRepository = new AuditLogRepository(client, logger);
+      const auditService = new AuditLogService(auditRepository, logger);
+
+      PrismaWrapper.auditService = auditService;
 
       PrismaWrapper.extendClient(client); // Fix: Use class name, not 'this'
     }

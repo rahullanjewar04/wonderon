@@ -1,21 +1,25 @@
 import { Router } from 'express';
-import { userRouter } from './user';
-import { bookRouter } from './book';
-import { auditRouter } from './audit-log';
-import { authRouter } from './auth';
+import { getUserRouter } from './user';
+import { getBookRouter } from './book';
+import { getAuditLogRouter } from './audit-log';
+import { getAuthRouter } from './auth';
 import { userAuthMiddleware } from '../middlewares/auth';
 import { adminAuthMiddleware } from '../middlewares/admin';
 
-export const v1Router = Router();
+export function getV1Router() {
+  const v1Router = Router();
 
-// Open routes
-v1Router.use('/auth', authRouter);
+  // Open routes
+  v1Router.use('/auth', getAuthRouter());
 
-// Protected routes
-v1Router.use(userAuthMiddleware);
-v1Router.use('/me', userRouter);
-v1Router.use('/books', bookRouter);
+  // Protected routes
+  v1Router.use(userAuthMiddleware);
+  v1Router.use('/me', getUserRouter());
+  v1Router.use('/books', getBookRouter());
 
-// Admin routes
-v1Router.use(adminAuthMiddleware);
-v1Router.use('/audit', auditRouter);
+  // Admin routes
+  v1Router.use(adminAuthMiddleware);
+  v1Router.use('/audit', getAuditLogRouter);
+
+  return v1Router;
+}

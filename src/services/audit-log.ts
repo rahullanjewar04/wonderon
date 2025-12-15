@@ -1,20 +1,19 @@
 import { als } from 'utils/async-local-storage';
 import { deepDiffRight } from '@utils/deep-diff';
-import { PrismaClient } from '@utils/prisma/generated/client';
+import { auditConfig } from '@utils/audit';
+import { BaseService } from './base';
+import { AuditLogRepository } from 'repositories/audit-log';
+import { Prisma } from '@utils/prisma/generated/client';
+import { AuditLogList } from '@schema/audit-log';
+import pino from 'pino';
 
-interface AuditConfigDetails {
-  track: boolean;
-  redact: string[];
-  exclude: string[];
-}
+export class AuditLogService extends BaseService {
+  private auditLogRepository: AuditLogRepository;
 
-const auditConfig: Record<string, AuditConfigDetails> = {
-  user: { track: true, redact: ['credentials'], exclude: ['credentials'] },
-  book: { track: true, redact: [], exclude: ['updatedAt'] },
-};
-
-export class AuditService {
-  constructor(private client: PrismaClient) {}
+  constructor(auditLogRepository: AuditLogRepository, logger: pino.Logger) {
+    super(logger);
+    this.auditLogRepository = auditLogRepository;
+  }
 
   // Returns NEW object, doesn't touch original
   private sanitizeData(data: any, redactKeys: string[], excludeKeys: string[]): any {
@@ -38,65 +37,67 @@ export class AuditService {
     return result;
   }
 
-  private getConfig(model: string) {
+  private getConfig(model: Prisma.ModelName) {
     return auditConfig[model.toLowerCase()];
   }
 
-  private maybeSanitize(model: string, data: any) {
+  private maybeSanitize(model: Prisma.ModelName, data: any) {
     const config = this.getConfig(model);
     return config?.track ? this.sanitizeData(data, config.redact, config.exclude) : data;
   }
 
-  async logCreate(model: string, entityId: string, data: any) {
+  async logCreate(model: Prisma.ModelName, entityId: string, data: any) {
     const context = als.getStore()!;
     const sanitizedData = this.maybeSanitize(model, data); // Clone + sanitize
 
-    await this.client.auditLog.create({
-      data: {
-        entity: model,
-        entityId,
-        action: 'CREATE',
-        diff: sanitizedData,
-        requestId: context.requestId,
-        ip: context.ip,
-        actorId: context.userId,
-        master: context.userId ? false : true,
-      },
+    await this.auditLogRepository.create({
+      entity: model,
+      entityId,
+      action: 'CREATE',
+      diff: sanitizedData,
+      requestId: context.requestId,
+      ip: context.ip,
+      actorId: context.userId,
+      master: context.userId ? false : true,
     });
   }
 
-  async logUpdate(model: string, entityId: string, oldData: any, newData: any) {
+  async logUpdate(model: Prisma.ModelName, entityId: string, oldData: any, newData: any) {
     const context = als.getStore()!;
     const changes = deepDiffRight(oldData, newData);
     const sanitizedChanges = this.maybeSanitize(model, changes);
 
-    await this.client.auditLog.create({
-      data: {
-        entity: model,
-        entityId,
-        action: 'UPDATE',
-        diff: sanitizedChanges,
-        requestId: context.requestId,
-        ip: context.ip,
-        actorId: context.userId,
-        master: context.userId ? false : true,
-      },
+    await this.auditLogRepository.create({
+      entity: model,
+      entityId,
+      action: 'UPDATE',
+      diff: sanitizedChanges,
+      requestId: context.requestId,
+      ip: context.ip,
+      actorId: context.userId,
+      master: context.userId ? false : true,
     });
   }
 
-  async logDelete(model: string, entityId: string) {
+  async logDelete(model: Prisma.ModelName, entityId: string) {
     const context = als.getStore()!;
 
-    await this.client.auditLog.create({
-      data: {
-        entity: model,
-        entityId,
-        action: 'DELETE',
-        requestId: context.requestId,
-        ip: context.ip,
-        actorId: context.userId,
-        master: context.userId ? false : true,
-      },
+    await this.auditLogRepository.create({
+      entity: model,
+      entityId,
+      action: 'DELETE',
+      requestId: context.requestId,
+      ip: context.ip,
+      actorId: context.userId,
+      master: context.userId ? false : true,
     });
+  }
+
+  async getLog(id: string) {
+    return await this.auditLogRepository.getById(id);
+  }
+
+  async listLogs(payload: AuditLogList) {
+    return await this.auditLogRepository.list(payload);
   }
 }

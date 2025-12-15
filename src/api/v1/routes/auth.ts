@@ -1,7 +1,10 @@
 import { Router } from 'express';
 
-export const authRouter = Router();
+export function getAuthRouter() {
+  const authRouter = Router();
 
-authRouter.post('/login');
-authRouter.post('/logout');
-authRouter.post('/register');
+  authRouter.post('/login');
+  authRouter.post('/logout');
+  authRouter.post('/register');
+  return authRouter;
+}

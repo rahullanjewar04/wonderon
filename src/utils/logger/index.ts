@@ -4,6 +4,7 @@ import { getTransport as getFileTransport } from './transports/file';
 import { getTransport as getElasticSearchTransport } from './transports/elastic-search';
 import { Config } from '@schema/config';
 import { getContext } from '../async-local-storage';
+import { auditConfig } from '@utils/audit';
 
 export class Logger {
   private static instance: pino.Logger;
@@ -47,12 +48,30 @@ export class Logger {
   }
 
   private static createLogger(log: Config['log']) {
+    const auditConfigDetails = Object.values(auditConfig);
+    const redactPaths: string[] = [];
+    const excludePaths: string[] = [];
+
+    auditConfigDetails.forEach((config) => {
+      if (!config.track) {
+        return;
+      }
+
+      redactPaths.push(...config.redact);
+      excludePaths.push(...config.exclude);
+    });
+
     const logger = pino({
       level: log.level,
       base: { service: 'book-app', version: '1.0.0' },
       timestamp: pino.stdTimeFunctions.isoTime,
       transport: {
         targets: this.buildTargets(log),
+      },
+      redact: {
+        // Paths to redact
+        paths: redactPaths,
+        // TODO: implement paths to exclude, pino currently doesn't support this
       },
     });
 

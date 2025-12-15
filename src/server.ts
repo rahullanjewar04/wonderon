@@ -3,19 +3,21 @@ import http from 'http';
 import { PrismaWrapper } from '@utils/prisma';
 import { AppConfig } from '@utils/config';
 import { Logger } from '@utils/logger';
-import { apiRouter } from './api/router';
+import { getApiRouter } from './api/router';
 import { errorHandler } from './api/common/middlewares/error-handler';
 import { requestContextMiddleware } from './api/common/middlewares/request-context';
-import { CryptoService } from '@utils/encrpytion';
+import { CryptoService } from '@utils/encryption';
 import { Jwt } from '@utils/jwt';
 
 void (async () => {
   const config = AppConfig.getInstance();
 
   const logger = Logger.getInstance(config.log);
-  PrismaWrapper.getInstance(config.dbUrl);
   CryptoService.getInstance(config.encryptionKey);
   Jwt.getInstance(config.jwt.secret);
+
+  // Initialize Prisma, we do audit logging at prisma
+  PrismaWrapper.getInstance(config.dbUrl);
 
   const app = express();
 
@@ -25,7 +27,7 @@ void (async () => {
     res.send('OK');
   });
 
-  app.use('/api', apiRouter);
+  app.use('/api', getApiRouter());
 
   // Error handling middleware
   app.use(errorHandler);

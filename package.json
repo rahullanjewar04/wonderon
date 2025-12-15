@@ -16,8 +16,10 @@
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "7.1.0",
     "@prisma/client": "7.1.0",
+    "@types/lodash": "4.17.21",
     "express": "4.21.2",
     "jsonwebtoken": "9.0.2",
+    "lodash": "4.17.21",
     "p-map": "4.0",
     "p-retry": "4.6.2",
     "pino": "10.1.0",

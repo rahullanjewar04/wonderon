@@ -1,3 +1,7 @@
 import { Router } from 'express';
 
-export const bookRouter = Router();
+export function getBookRouter() {
+  const bookRouter = Router();
+
+  return bookRouter;
+}
