@@ -7,8 +7,8 @@ export const schema = z.strictObject({
   entityId: z.string().min(1),
   action: z.enum(['CREATE', 'UPDATE', 'DELETE']),
   diff: z.record(z.any(), z.any()).optional(),
-  requestId: z.uuidv4(),
-  ip: z.union([z.ipv4(), z.ipv6()]),
+  requestId: z.uuidv4().optional(),
+  ip: z.union([z.ipv4(), z.ipv6()]).optional(),
   master: z.boolean().default(false),
   actorId: z.uuidv4().optional(),
 });

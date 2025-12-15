@@ -8,10 +8,11 @@
   "scripts": {
     "build": "tsc && tsc-alias",
     "dev:verify": "chmod +x ./scripts/verify.sh && ./scripts/verify.sh",
+    "dev:migrate": "npm run dev:verify && tsx -r dotenv/config src/migration.ts",
     "dev": "npm run dev:verify && tsx -r dotenv/config --inspect src/server.ts",
     "start": "node lib/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "circular": "dpdm --tree false --exit-code circular:1 src/index.ts"
+    "circular": "dpdm --tree false --exit-code circular:1 src/server.ts"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "7.1.0",

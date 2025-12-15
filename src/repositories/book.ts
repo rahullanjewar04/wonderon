@@ -68,14 +68,10 @@ export class BookRepository extends BaseRepository {
       if (payload.filters.authors) args.where!['authors'] = payload.filters.authors;
       if (payload.filters.createdBy) args.where!['createdBy'] = payload.filters.createdBy;
       if (payload.filters.publishedBy) args.where!['publishedBy'] = payload.filters.publishedBy;
-
-      // If deleted is not set, default to false
-      if (payload.filters.deleted !== undefined) {
-        args.where!['deleted'] = payload.filters.deleted;
-      } else {
-        args.where!['deleted'] = false;
-      }
     }
+
+    // Always list only the books that are not deleted
+    args.where!['deleted'] = false;
 
     return await this.prismaClient.book.findMany({
       take: payload.take + 1,

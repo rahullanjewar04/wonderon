@@ -182,8 +182,8 @@ export type AuditLogGroupByOutputType = {
   entityId: string
   action: string
   diff:unknown | null
-  requestId: string
-  ip: string
+  requestId: string | null
+  ip: string | null
   actorId: string | null
   master: boolean
   _count: AuditLogCountAggregateOutputType | null
@@ -216,8 +216,8 @@ export type AuditLogWhereInput = {
   entityId?: Prisma.StringFilter<"AuditLog"> | string
   action?: Prisma.StringFilter<"AuditLog"> | string
   diff?: Prisma.JsonNullableFilter<"AuditLog">
-  requestId?: Prisma.StringFilter<"AuditLog"> | string
-  ip?: Prisma.StringFilter<"AuditLog"> | string
+  requestId?: Prisma.StringNullableFilter<"AuditLog"> | string | null
+  ip?: Prisma.StringNullableFilter<"AuditLog"> | string | null
   actorId?: Prisma.StringNullableFilter<"AuditLog"> | string | null
   master?: Prisma.BoolFilter<"AuditLog"> | boolean
   actor?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -230,8 +230,8 @@ export type AuditLogOrderByWithRelationInput = {
   entityId?: Prisma.SortOrder
   action?: Prisma.SortOrder
   diff?: Prisma.SortOrderInput | Prisma.SortOrder
-  requestId?: Prisma.SortOrder
-  ip?: Prisma.SortOrder
+  requestId?: Prisma.SortOrderInput | Prisma.SortOrder
+  ip?: Prisma.SortOrderInput | Prisma.SortOrder
   actorId?: Prisma.SortOrderInput | Prisma.SortOrder
   master?: Prisma.SortOrder
   actor?: Prisma.UserOrderByWithRelationInput
@@ -247,8 +247,8 @@ export type AuditLogWhereUniqueInput = Prisma.AtLeast<{
   entityId?: Prisma.StringFilter<"AuditLog"> | string
   action?: Prisma.StringFilter<"AuditLog"> | string
   diff?: Prisma.JsonNullableFilter<"AuditLog">
-  requestId?: Prisma.StringFilter<"AuditLog"> | string
-  ip?: Prisma.StringFilter<"AuditLog"> | string
+  requestId?: Prisma.StringNullableFilter<"AuditLog"> | string | null
+  ip?: Prisma.StringNullableFilter<"AuditLog"> | string | null
   actorId?: Prisma.StringNullableFilter<"AuditLog"> | string | null
   master?: Prisma.BoolFilter<"AuditLog"> | boolean
   actor?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -261,8 +261,8 @@ export type AuditLogOrderByWithAggregationInput = {
   entityId?: Prisma.SortOrder
   action?: Prisma.SortOrder
   diff?: Prisma.SortOrderInput | Prisma.SortOrder
-  requestId?: Prisma.SortOrder
-  ip?: Prisma.SortOrder
+  requestId?: Prisma.SortOrderInput | Prisma.SortOrder
+  ip?: Prisma.SortOrderInput | Prisma.SortOrder
   actorId?: Prisma.SortOrderInput | Prisma.SortOrder
   master?: Prisma.SortOrder
   _count?: Prisma.AuditLogCountOrderByAggregateInput
@@ -280,8 +280,8 @@ export type AuditLogScalarWhereWithAggregatesInput = {
   entityId?: Prisma.StringWithAggregatesFilter<"AuditLog"> | string
   action?: Prisma.StringWithAggregatesFilter<"AuditLog"> | string
   diff?: Prisma.JsonNullableWithAggregatesFilter<"AuditLog">
-  requestId?: Prisma.StringWithAggregatesFilter<"AuditLog"> | string
-  ip?: Prisma.StringWithAggregatesFilter<"AuditLog"> | string
+  requestId?: Prisma.StringNullableWithAggregatesFilter<"AuditLog"> | string | null
+  ip?: Prisma.StringNullableWithAggregatesFilter<"AuditLog"> | string | null
   actorId?: Prisma.StringNullableWithAggregatesFilter<"AuditLog"> | string | null
   master?: Prisma.BoolWithAggregatesFilter<"AuditLog"> | boolean
 }
@@ -293,8 +293,8 @@ export type AuditLogCreateInput = {
   entityId: string
   action: string
   diff?:unknown | NullableJsonNullValueInput
-  requestId: string
-  ip: string
+  requestId?: string | null
+  ip?: string | null
   master: boolean
   actor?: Prisma.UserCreateNestedOneWithoutAuditLogsInput
 }
@@ -306,8 +306,8 @@ export type AuditLogUncheckedCreateInput = {
   entityId: string
   action: string
   diff?:unknown | NullableJsonNullValueInput
-  requestId: string
-  ip: string
+  requestId?: string | null
+  ip?: string | null
   actorId?: string | null
   master: boolean
 }
@@ -319,8 +319,8 @@ export type AuditLogUpdateInput = {
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.StringFieldUpdateOperationsInput | string
   diff?:unknown | NullableJsonNullValueInput
-  requestId?: Prisma.StringFieldUpdateOperationsInput | string
-  ip?: Prisma.StringFieldUpdateOperationsInput | string
+  requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   master?: Prisma.BoolFieldUpdateOperationsInput | boolean
   actor?: Prisma.UserUpdateOneWithoutAuditLogsNestedInput
 }
@@ -332,8 +332,8 @@ export type AuditLogUncheckedUpdateInput = {
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.StringFieldUpdateOperationsInput | string
   diff?:unknown | NullableJsonNullValueInput
-  requestId?: Prisma.StringFieldUpdateOperationsInput | string
-  ip?: Prisma.StringFieldUpdateOperationsInput | string
+  requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   master?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
@@ -345,8 +345,8 @@ export type AuditLogCreateManyInput = {
   entityId: string
   action: string
   diff?:unknown | NullableJsonNullValueInput
-  requestId: string
-  ip: string
+  requestId?: string | null
+  ip?: string | null
   actorId?: string | null
   master: boolean
 }
@@ -358,8 +358,8 @@ export type AuditLogUpdateManyMutationInput = {
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.StringFieldUpdateOperationsInput | string
   diff?:unknown | NullableJsonNullValueInput
-  requestId?: Prisma.StringFieldUpdateOperationsInput | string
-  ip?: Prisma.StringFieldUpdateOperationsInput | string
+  requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   master?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
@@ -370,8 +370,8 @@ export type AuditLogUncheckedUpdateManyInput = {
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.StringFieldUpdateOperationsInput | string
   diff?:unknown | NullableJsonNullValueInput
-  requestId?: Prisma.StringFieldUpdateOperationsInput | string
-  ip?: Prisma.StringFieldUpdateOperationsInput | string
+  requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   master?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
@@ -472,8 +472,8 @@ export type AuditLogCreateWithoutActorInput = {
   entityId: string
   action: string
   diff?:unknown | NullableJsonNullValueInput
-  requestId: string
-  ip: string
+  requestId?: string | null
+  ip?: string | null
   master: boolean
 }
 
@@ -484,8 +484,8 @@ export type AuditLogUncheckedCreateWithoutActorInput = {
   entityId: string
   action: string
   diff?:unknown | NullableJsonNullValueInput
-  requestId: string
-  ip: string
+  requestId?: string | null
+  ip?: string | null
   master: boolean
 }
 
@@ -524,8 +524,8 @@ export type AuditLogScalarWhereInput = {
   entityId?: Prisma.StringFilter<"AuditLog"> | string
   action?: Prisma.StringFilter<"AuditLog"> | string
   diff?: Prisma.JsonNullableFilter<"AuditLog">
-  requestId?: Prisma.StringFilter<"AuditLog"> | string
-  ip?: Prisma.StringFilter<"AuditLog"> | string
+  requestId?: Prisma.StringNullableFilter<"AuditLog"> | string | null
+  ip?: Prisma.StringNullableFilter<"AuditLog"> | string | null
   actorId?: Prisma.StringNullableFilter<"AuditLog"> | string | null
   master?: Prisma.BoolFilter<"AuditLog"> | boolean
 }
@@ -537,8 +537,8 @@ export type AuditLogCreateManyActorInput = {
   entityId: string
   action: string
   diff?:unknown | NullableJsonNullValueInput
-  requestId: string
-  ip: string
+  requestId?: string | null
+  ip?: string | null
   master: boolean
 }
 
@@ -549,8 +549,8 @@ export type AuditLogUpdateWithoutActorInput = {
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.StringFieldUpdateOperationsInput | string
   diff?:unknown | NullableJsonNullValueInput
-  requestId?: Prisma.StringFieldUpdateOperationsInput | string
-  ip?: Prisma.StringFieldUpdateOperationsInput | string
+  requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   master?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
@@ -561,8 +561,8 @@ export type AuditLogUncheckedUpdateWithoutActorInput = {
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.StringFieldUpdateOperationsInput | string
   diff?:unknown | NullableJsonNullValueInput
-  requestId?: Prisma.StringFieldUpdateOperationsInput | string
-  ip?: Prisma.StringFieldUpdateOperationsInput | string
+  requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   master?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
@@ -573,8 +573,8 @@ export type AuditLogUncheckedUpdateManyWithoutActorInput = {
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.StringFieldUpdateOperationsInput | string
   diff?:unknown | NullableJsonNullValueInput
-  requestId?: Prisma.StringFieldUpdateOperationsInput | string
-  ip?: Prisma.StringFieldUpdateOperationsInput | string
+  requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   master?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
@@ -658,8 +658,8 @@ export type $AuditLogPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     entityId: string
     action: string
     diff:unknown | null
-    requestId: string
-    ip: string
+    requestId: string | null
+    ip: string | null
     actorId: string | null
     master: boolean
   }, ExtArgs["result"]["auditLog"]>

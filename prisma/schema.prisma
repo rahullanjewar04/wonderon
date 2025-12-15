@@ -50,8 +50,8 @@ model AuditLog {
   entityId  String
   action    String
   diff      Json?
-  requestId String
-  ip        String
+  requestId String?
+  ip        String?
   actorId   String? // Nullable for server actions
   actor     User?    @relation("AuditLog_actor", fields: [actorId], references: [id])
   master    Boolean

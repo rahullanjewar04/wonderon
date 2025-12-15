@@ -50,7 +50,7 @@ export class AuditLogService extends BaseService {
   async logCreate(model: Prisma.ModelName, entityId: string, data: any) {
     this.logger.debug(`[AuditLogService] Logging create, ${model}, ${entityId}`);
 
-    const context = als.getStore()!;
+    const context = als.getStore();
     const sanitizedData = this.maybeSanitize(model, data); // Clone + sanitize
 
     await this.auditLogRepository.create({
@@ -58,17 +58,17 @@ export class AuditLogService extends BaseService {
       entityId,
       action: 'CREATE',
       diff: sanitizedData,
-      requestId: context.requestId,
-      ip: context.ip,
-      actorId: context.userId,
-      master: context.userId ? false : true,
+      requestId: context?.requestId,
+      ip: context?.ip,
+      actorId: context?.userId,
+      master: context && context.userId ? false : true,
     });
   }
 
   async logUpdate(model: Prisma.ModelName, entityId: string, oldData: any, newData: any) {
     this.logger.debug(`[AuditLogService] Logging update, ${model}, ${entityId}`);
 
-    const context = als.getStore()!;
+    const context = als.getStore();
     const changes = deepDiffRight(oldData, newData);
     const sanitizedChanges = this.maybeSanitize(model, changes);
 
@@ -77,26 +77,26 @@ export class AuditLogService extends BaseService {
       entityId,
       action: 'UPDATE',
       diff: sanitizedChanges,
-      requestId: context.requestId,
-      ip: context.ip,
-      actorId: context.userId,
-      master: context.userId ? false : true,
+      requestId: context?.requestId,
+      ip: context?.ip,
+      actorId: context?.userId,
+      master: context && context.userId ? false : true,
     });
   }
 
   async logDelete(model: Prisma.ModelName, entityId: string) {
     this.logger.debug(`[AuditLogService] Logging delete, ${model}, ${entityId}`);
 
-    const context = als.getStore()!;
+    const context = als.getStore();
 
     await this.auditLogRepository.create({
       entity: model,
       entityId,
       action: 'DELETE',
-      requestId: context.requestId,
-      ip: context.ip,
-      actorId: context.userId,
-      master: context.userId ? false : true,
+      requestId: context?.requestId,
+      ip: context?.ip,
+      actorId: context?.userId,
+      master: context && context.userId ? false : true,
     });
   }
 

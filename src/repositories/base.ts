@@ -1,11 +1,11 @@
 import pino from 'pino';
-import { PrismaClient } from '@utils/prisma/generated/client';
+import { ExtendedPrismaClient } from '@utils/prisma';
 
 export abstract class BaseRepository {
-  protected prismaClient: PrismaClient;
+  protected prismaClient: ExtendedPrismaClient;
   protected logger: pino.Logger;
 
-  constructor(prismaClient: PrismaClient, logger: pino.Logger) {
+  constructor(prismaClient: ExtendedPrismaClient, logger: pino.Logger) {
     this.prismaClient = prismaClient;
     this.logger = logger;
   }

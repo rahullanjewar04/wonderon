@@ -32,7 +32,6 @@ export class AppConfig {
       };
 
       appConfig.redis = {
-        ...appConfig.redis,
         url:
           env.REDIS_USERNAME && env.REDIS_PASSWORD
             ? `redis://${env.REDIS_USERNAME}:${env.REDIS_PASSWORD}@${appConfig.redis.host}`

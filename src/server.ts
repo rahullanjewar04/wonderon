@@ -18,7 +18,7 @@ void (async () => {
   Jwt.getInstance(config.jwt.secret);
 
   // Initialize Prisma, we do audit logging at prisma
-  PrismaWrapper.getInstance(config.dbUrl);
+  PrismaWrapper.getInstance(config.dbUrl, logger);
 
   const app = express();
 
@@ -26,7 +26,7 @@ void (async () => {
   app.use(requestContextMiddleware);
 
   app.get('/health', (req, res) => {
-    res.send('OK');
+    res.status(200).send('OK');
   });
 
   app.use('/api', getApiRouter());

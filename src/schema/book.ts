@@ -10,12 +10,19 @@ const schema = z.strictObject({
   deleted: z.boolean(),
 });
 
-export const bookCreateServer = schema;
-export const bookCreateClient = schema.omit({ createdBy: true, updatedBy: true, deleted: true });
-export const bookUpdateServer = schema.partial();
-export const bookUpdateClient = schema.omit({ createdBy: true, updatedBy: true, deleted: true }).partial();
+const createOrUpdateSchema = schema.extend({
+  deleted: schema.shape.deleted.optional(),
+});
+export const bookCreateServer = createOrUpdateSchema.extend({
+  deleted: schema.shape.deleted.default(false).optional(),
+});
+export const bookCreateClient = createOrUpdateSchema.omit({ createdBy: true, updatedBy: true, deleted: true });
+export const bookUpdateServer = createOrUpdateSchema.partial();
+export const bookUpdateClient = createOrUpdateSchema
+  .omit({ createdBy: true, updatedBy: true, deleted: true })
+  .partial();
 
-const listFilters = schema.omit({ updatedBy: true }).partial();
+const listFilters = schema.omit({ deleted: true }).partial();
 
 // Get all top-level keys
 type ListSortKeys = keyof z.infer<typeof listFilters>;

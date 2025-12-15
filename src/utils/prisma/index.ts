@@ -4,6 +4,27 @@ import { PrismaClient } from './generated/client';
 import { AuditLogService } from 'services/audit-log';
 import pino from 'pino';
 import { AuditLogRepository } from 'repositories/audit-log';
+import { DynamicClientExtensionThis, InternalArgs } from '@prisma/client/runtime/client';
+import { GlobalOmitConfig, TypeMap, TypeMapCb } from './generated/internal/prismaNamespace';
+
+export type ExtendedPrismaClient = DynamicClientExtensionThis<
+  TypeMap<
+    InternalArgs & {
+      result: Record<never, never>;
+      model: Record<never, never>;
+      query: Record<never, never>;
+      client: Record<never, never>;
+    },
+    GlobalOmitConfig | undefined
+  >,
+  TypeMapCb<GlobalOmitConfig | undefined>,
+  {
+    result: Record<never, never>;
+    model: Record<never, never>;
+    query: Record<never, never>;
+    client: Record<never, never>;
+  }
+>;
 
 enum Entity {
   USER = 'user',
@@ -16,8 +37,8 @@ const modelTables: Record<string, string> = {
 };
 
 export class PrismaWrapper {
-  private static instance: PrismaClient | null = null;
   private static auditService: AuditLogService | null = null;
+  private static instance: ExtendedPrismaClient | null = null;
 
   static getInstance(dbUrl?: string, logger?: pino.Logger) {
     if (!PrismaWrapper.instance) {
@@ -31,24 +52,22 @@ export class PrismaWrapper {
 
       const adapter = new PrismaBetterSqlite3({ url: dbUrl });
       const client = new PrismaClient({ adapter });
+      const extendedClient = PrismaWrapper.extendClient(client);
 
-      PrismaWrapper.instance = client;
-
-      const auditRepository = new AuditLogRepository(client, logger);
+      const auditRepository = new AuditLogRepository(extendedClient, logger);
       const auditService = new AuditLogService(auditRepository, logger);
 
       PrismaWrapper.auditService = auditService;
-
-      PrismaWrapper.extendClient(client); // Fix: Use class name, not 'this'
+      PrismaWrapper.instance = extendedClient;
     }
 
-    return PrismaWrapper.instance!;
+    return PrismaWrapper.instance;
   }
 
   private static extendClient(client: PrismaClient) {
     const auditService = PrismaWrapper.auditService!;
 
-    client.$extends({
+    return client.$extends({
       query: {
         $allModels: {
           async create({ model, args, query }) {
