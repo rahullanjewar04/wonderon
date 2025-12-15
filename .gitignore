@@ -6,4 +6,4 @@ logs/
 *.db
 config.json
 
-/src/generated/prisma
+/src/utils/prisma/generated

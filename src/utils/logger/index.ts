@@ -6,9 +6,29 @@ import { Config } from '@schema/config';
 import { getContext } from '../async-local-storage';
 import { auditConfig } from '@utils/audit';
 
+/**
+ * Logger
+ *
+ * Thin wrapper around pino to centralize logger creation and ensure consumers
+ * get a request-aware child logger when async-local-storage context exists.
+ *
+ * Notes for maintainers:
+ * - The logger is created once via `getInstance(log)` and cached. Subsequent
+ *   calls return the same instance (or a child with request context).
+ * - `createLogger` collects redaction paths from the audit config and builds
+ *   transport targets. If you add transports, update `buildTargets`.
+ * - We intentionally return a child logger when a request context exists so
+ *   that logs automatically include requestId, ip, etc.
+ */
 export class Logger {
   private static instance: pino.Logger;
 
+  /**
+   * buildTargets
+   *
+   * Build transport targets for pino based on provided config. Keep this small
+   * and deterministic to make logging behavior predictable across environments.
+   */
   private static buildTargets(log: Config['log']) {
     // Always write to console by default.
     const targets: TransportTargetOptions<Record<string, any>>[] = [
@@ -28,6 +48,8 @@ export class Logger {
           target = getFileTransport(log);
           break;
         case 'logtail':
+          // Logtail requires a source token available in config; the transport
+          // builder is responsible for creating the proper pino transport target.
           target = getLogtailTransport(log.logtail!.sourceToken);
           break;
         // Shouldn't reach here as we have zod validations but adding default just in case.
@@ -47,6 +69,14 @@ export class Logger {
     return targets;
   }
 
+  /**
+   * createLogger
+   *
+   * Create the pino logger instance. We derive a list of redaction paths from
+   * audit configuration so PII doesn't leak into logs by mistake.
+   *
+   * Keep formatting and transport decisions here so they are easy to find.
+   */
   private static createLogger(log: Config['log']) {
     const auditConfigDetails = Object.values(auditConfig);
     const redactPaths: string[] = [];
@@ -79,6 +109,14 @@ export class Logger {
     return logger;
   }
 
+  /**
+   * getInstance
+   *
+   * Public accessor for the singleton logger. On first call it requires a
+   * configuration object; subsequent calls return the cached instance. If a
+   * per-request context exists (via async-local-storage), return a child logger
+   * tied to that context so logs include request-specific fields.
+   */
   public static getInstance(log?: Config['log']) {
     if (!Logger.instance) {
       if (!log) {
@@ -94,6 +132,7 @@ export class Logger {
       return Logger.instance;
     }
 
+    // Return a child logger bound to request context (requestId, ip, etc.)
     return Logger.instance.child(context);
   }
 }
