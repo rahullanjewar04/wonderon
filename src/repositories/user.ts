@@ -1,20 +1,11 @@
-import pino from 'pino';
-import { UserCreateServer, UserUpdateServer } from 'schema/user';
-import { PrismaClient } from 'utils/prisma/generated/client';
+import { UserCreateServer, UserUpdateServer } from '@schema/user';
+import { BaseRepository } from './base';
 
-export class UserRepository {
-  private client: PrismaClient;
-  private logger: pino.Logger;
-
-  constructor(prismaClient: PrismaClient, logger: pino.Logger) {
-    this.client = prismaClient;
-    this.logger = logger;
-  }
-
+export class UserRepository extends BaseRepository {
   async create(payload: UserCreateServer) {
     this.logger.debug(`[UserRepository] Creating user, ${payload}`);
 
-    return await this.client.user.create({
+    return await this.prismaClient.user.create({
       data: payload,
     });
   }
@@ -22,7 +13,7 @@ export class UserRepository {
   async update(id: string, payload: UserUpdateServer) {
     this.logger.debug(`[UserRepository] Updating user, ${id}`);
 
-    return await this.client.user.update({
+    return await this.prismaClient.user.update({
       where: {
         id,
       },
@@ -33,7 +24,7 @@ export class UserRepository {
   async getById(id: string) {
     this.logger.debug(`[UserRepository] Getting user, ${id}`);
 
-    return await this.client.user.findUnique({
+    return await this.prismaClient.user.findUnique({
       where: {
         id,
       },
@@ -43,7 +34,7 @@ export class UserRepository {
   async getByEmail(email: string) {
     this.logger.debug(`[UserRepository] Getting user, ${email}`);
 
-    return await this.client.user.findUnique({
+    return await this.prismaClient.user.findUnique({
       where: {
         email,
       },
@@ -53,7 +44,7 @@ export class UserRepository {
   async exists(email: string): Promise<boolean> {
     this.logger.debug(`[UserRepository] Checking if user exists, ${email}`);
 
-    const exists = await this.client.user.count({
+    const exists = await this.prismaClient.user.count({
       where: {
         email,
       },

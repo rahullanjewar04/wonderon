@@ -28,11 +28,6 @@ export type User = Prisma.UserModel
  */
 export type Book = Prisma.BookModel
 /**
- * Model Settings
- * 
- */
-export type Settings = Prisma.SettingsModel
-/**
  * Model AuditLog
  * 
  */

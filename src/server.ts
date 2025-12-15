@@ -1,13 +1,13 @@
 import express from 'express';
 import http from 'http';
-import { PrismaWrapper } from 'utils/prisma';
-import { AppConfig } from 'utils/config';
-import { Logger } from 'utils/logger';
+import { PrismaWrapper } from '@utils/prisma';
+import { AppConfig } from '@utils/config';
+import { Logger } from '@utils/logger';
 import { apiRouter } from './api/router';
 import { errorHandler } from './api/common/middlewares/error-handler';
 import { requestContextMiddleware } from './api/common/middlewares/request-context';
-import { CryptoService } from 'utils/encrpytion';
-import { Jwt } from 'utils/jwt';
+import { CryptoService } from '@utils/encrpytion';
+import { Jwt } from '@utils/jwt';
 
 void (async () => {
   const config = AppConfig.getInstance();

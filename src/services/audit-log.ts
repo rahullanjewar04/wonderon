@@ -1,6 +1,6 @@
 import { als } from 'utils/async-local-storage';
-import { deepDiffRight } from 'utils/deep-diff';
-import { PrismaClient } from 'utils/prisma/generated/client';
+import { deepDiffRight } from '@utils/deep-diff';
+import { PrismaClient } from '@utils/prisma/generated/client';
 
 interface AuditConfigDetails {
   track: boolean;

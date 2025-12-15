@@ -386,7 +386,6 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   User: 'User',
   Book: 'Book',
-  Settings: 'Settings',
   AuditLog: 'AuditLog'
 } as const
 
@@ -403,7 +402,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "book" | "settings" | "auditLog"
+    modelProps: "user" | "book" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -555,80 +554,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    Settings: {
-      payload: Prisma.$SettingsPayload<ExtArgs>
-      fields: Prisma.SettingsFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.SettingsFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.SettingsFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload>
-        }
-        findFirst: {
-          args: Prisma.SettingsFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.SettingsFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload>
-        }
-        findMany: {
-          args: Prisma.SettingsFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload>[]
-        }
-        create: {
-          args: Prisma.SettingsCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload>
-        }
-        createMany: {
-          args: Prisma.SettingsCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.SettingsCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload>[]
-        }
-        delete: {
-          args: Prisma.SettingsDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload>
-        }
-        update: {
-          args: Prisma.SettingsUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload>
-        }
-        deleteMany: {
-          args: Prisma.SettingsDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.SettingsUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.SettingsUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload>[]
-        }
-        upsert: {
-          args: Prisma.SettingsUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload>
-        }
-        aggregate: {
-          args: Prisma.SettingsAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateSettings>
-        }
-        groupBy: {
-          args: Prisma.SettingsGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.SettingsGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.SettingsCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.SettingsCountAggregateOutputType> | number
-        }
-      }
-    }
     AuditLog: {
       payload: Prisma.$AuditLogPayload<ExtArgs>
       fields: Prisma.AuditLogFieldRefs
@@ -767,17 +692,6 @@ export const BookScalarFieldEnum = {
 export type BookScalarFieldEnum = (typeof BookScalarFieldEnum)[keyof typeof BookScalarFieldEnum]
 
 
-export const SettingsScalarFieldEnum = {
-  id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  userId: 'userId',
-  auditLog: 'auditLog'
-} as const
-
-export type SettingsScalarFieldEnum = (typeof SettingsScalarFieldEnum)[keyof typeof SettingsScalarFieldEnum]
-
-
 export const AuditLogScalarFieldEnum = {
   id: 'id',
   timestamp: 'timestamp',
@@ -800,13 +714,6 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
-
-
-export const JsonNullValueInput = {
-  JsonNull: JsonNull
-} as const
-
-export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const NullableJsonNullValueInput = {
@@ -986,7 +893,6 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   book?: Prisma.BookOmit
-  settings?: Prisma.SettingsOmit
   auditLog?: Prisma.AuditLogOmit
 }
 

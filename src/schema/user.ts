@@ -12,7 +12,6 @@ export const userCreateClient = schema.omit({ credentials: true });
 export const userUpdateServer = schema.partial();
 export const userUpdateClient = schema.omit({ credentials: true }).partial();
 
-export type User = z.infer<typeof schema>;
 export type UserCreateServer = z.infer<typeof userCreateServer>;
 export type UserCreateClient = z.infer<typeof userCreateClient>;
 export type UserUpdateServer = z.infer<typeof userUpdateServer>;

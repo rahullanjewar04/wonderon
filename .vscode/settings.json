@@ -4,6 +4,8 @@
         "dpdm",
         "Lanjewar",
         "logtail",
-        "Rahul"
-    ]
+        "Rahul",
+        "uuidv"
+    ],
+    "typescript.tsdk": "node_modules/typescript/lib"
 }

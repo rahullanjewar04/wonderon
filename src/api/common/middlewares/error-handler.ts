@@ -1,7 +1,7 @@
 import express from 'express';
-import { als } from 'utils/async-local-storage';
-import { AppError } from 'utils/error';
-import { Logger } from 'utils/logger';
+import { als } from '@utils/async-local-storage';
+import { AppError } from '@utils/error';
+import { Logger } from '@utils/logger';
 import z from 'zod';
 
 export async function errorHandler(

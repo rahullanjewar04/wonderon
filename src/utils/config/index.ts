@@ -1,6 +1,6 @@
 // config/AppConfig.ts
 import { readFileSync } from 'node:fs';
-import { Config, schema } from 'schema/config';
+import { Config, schema } from '@schema/config';
 import path from 'node:path';
 
 export class AppConfig {

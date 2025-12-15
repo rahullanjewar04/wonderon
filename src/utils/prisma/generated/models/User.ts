@@ -208,7 +208,6 @@ export type UserWhereInput = {
   role?: Prisma.StringFilter<"User"> | string
   credentials?: Prisma.StringFilter<"User"> | string
   bookId?: Prisma.StringNullableFilter<"User"> | string | null
-  settings?: Prisma.XOR<Prisma.SettingsNullableScalarRelationFilter, Prisma.SettingsWhereInput> | null
   auditLogs?: Prisma.AuditLogListRelationFilter
   createdBooks?: Prisma.BookListRelationFilter
   updatedBooks?: Prisma.BookListRelationFilter
@@ -223,7 +222,6 @@ export type UserOrderByWithRelationInput = {
   role?: Prisma.SortOrder
   credentials?: Prisma.SortOrder
   bookId?: Prisma.SortOrderInput | Prisma.SortOrder
-  settings?: Prisma.SettingsOrderByWithRelationInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
   createdBooks?: Prisma.BookOrderByRelationAggregateInput
   updatedBooks?: Prisma.BookOrderByRelationAggregateInput
@@ -241,7 +239,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   role?: Prisma.StringFilter<"User"> | string
   credentials?: Prisma.StringFilter<"User"> | string
   bookId?: Prisma.StringNullableFilter<"User"> | string | null
-  settings?: Prisma.XOR<Prisma.SettingsNullableScalarRelationFilter, Prisma.SettingsWhereInput> | null
   auditLogs?: Prisma.AuditLogListRelationFilter
   createdBooks?: Prisma.BookListRelationFilter
   updatedBooks?: Prisma.BookListRelationFilter
@@ -284,7 +281,6 @@ export type UserCreateInput = {
   role: string
   credentials: string
   bookId?: string | null
-  settings?: Prisma.SettingsCreateNestedOneWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
   createdBooks?: Prisma.BookCreateNestedManyWithoutCreatedByUserInput
   updatedBooks?: Prisma.BookCreateNestedManyWithoutUpdatedByUserInput
@@ -299,7 +295,6 @@ export type UserUncheckedCreateInput = {
   role: string
   credentials: string
   bookId?: string | null
-  settings?: Prisma.SettingsUncheckedCreateNestedOneWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
   createdBooks?: Prisma.BookUncheckedCreateNestedManyWithoutCreatedByUserInput
   updatedBooks?: Prisma.BookUncheckedCreateNestedManyWithoutUpdatedByUserInput
@@ -314,7 +309,6 @@ export type UserUpdateInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string
   credentials?: Prisma.StringFieldUpdateOperationsInput | string
   bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  settings?: Prisma.SettingsUpdateOneWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
   createdBooks?: Prisma.BookUpdateManyWithoutCreatedByUserNestedInput
   updatedBooks?: Prisma.BookUpdateManyWithoutUpdatedByUserNestedInput
@@ -329,7 +323,6 @@ export type UserUncheckedUpdateInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string
   credentials?: Prisma.StringFieldUpdateOperationsInput | string
   bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  settings?: Prisma.SettingsUncheckedUpdateOneWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
   createdBooks?: Prisma.BookUncheckedUpdateManyWithoutCreatedByUserNestedInput
   updatedBooks?: Prisma.BookUncheckedUpdateManyWithoutUpdatedByUserNestedInput
@@ -453,20 +446,6 @@ export type UserUpdateOneWithoutUpdatedBooksNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUpdatedBooksInput, Prisma.UserUpdateWithoutUpdatedBooksInput>, Prisma.UserUncheckedUpdateWithoutUpdatedBooksInput>
 }
 
-export type UserCreateNestedOneWithoutSettingsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutSettingsInput, Prisma.UserUncheckedCreateWithoutSettingsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSettingsInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutSettingsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutSettingsInput, Prisma.UserUncheckedCreateWithoutSettingsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSettingsInput
-  upsert?: Prisma.UserUpsertWithoutSettingsInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSettingsInput, Prisma.UserUpdateWithoutSettingsInput>, Prisma.UserUncheckedUpdateWithoutSettingsInput>
-}
-
 export type UserCreateNestedOneWithoutAuditLogsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutAuditLogsInput, Prisma.UserUncheckedCreateWithoutAuditLogsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutAuditLogsInput
@@ -492,7 +471,6 @@ export type UserCreateWithoutCreatedBooksInput = {
   role: string
   credentials: string
   bookId?: string | null
-  settings?: Prisma.SettingsCreateNestedOneWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
   updatedBooks?: Prisma.BookCreateNestedManyWithoutUpdatedByUserInput
 }
@@ -506,7 +484,6 @@ export type UserUncheckedCreateWithoutCreatedBooksInput = {
   role: string
   credentials: string
   bookId?: string | null
-  settings?: Prisma.SettingsUncheckedCreateNestedOneWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
   updatedBooks?: Prisma.BookUncheckedCreateNestedManyWithoutUpdatedByUserInput
 }
@@ -525,7 +502,6 @@ export type UserCreateWithoutUpdatedBooksInput = {
   role: string
   credentials: string
   bookId?: string | null
-  settings?: Prisma.SettingsCreateNestedOneWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
   createdBooks?: Prisma.BookCreateNestedManyWithoutCreatedByUserInput
 }
@@ -539,7 +515,6 @@ export type UserUncheckedCreateWithoutUpdatedBooksInput = {
   role: string
   credentials: string
   bookId?: string | null
-  settings?: Prisma.SettingsUncheckedCreateNestedOneWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
   createdBooks?: Prisma.BookUncheckedCreateNestedManyWithoutCreatedByUserInput
 }
@@ -569,7 +544,6 @@ export type UserUpdateWithoutCreatedBooksInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string
   credentials?: Prisma.StringFieldUpdateOperationsInput | string
   bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  settings?: Prisma.SettingsUpdateOneWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
   updatedBooks?: Prisma.BookUpdateManyWithoutUpdatedByUserNestedInput
 }
@@ -583,7 +557,6 @@ export type UserUncheckedUpdateWithoutCreatedBooksInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string
   credentials?: Prisma.StringFieldUpdateOperationsInput | string
   bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  settings?: Prisma.SettingsUncheckedUpdateOneWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
   updatedBooks?: Prisma.BookUncheckedUpdateManyWithoutUpdatedByUserNestedInput
 }
@@ -608,7 +581,6 @@ export type UserUpdateWithoutUpdatedBooksInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string
   credentials?: Prisma.StringFieldUpdateOperationsInput | string
   bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  settings?: Prisma.SettingsUpdateOneWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
   createdBooks?: Prisma.BookUpdateManyWithoutCreatedByUserNestedInput
 }
@@ -622,81 +594,8 @@ export type UserUncheckedUpdateWithoutUpdatedBooksInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string
   credentials?: Prisma.StringFieldUpdateOperationsInput | string
   bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  settings?: Prisma.SettingsUncheckedUpdateOneWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
   createdBooks?: Prisma.BookUncheckedUpdateManyWithoutCreatedByUserNestedInput
-}
-
-export type UserCreateWithoutSettingsInput = {
-  id?: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  name: string
-  email: string
-  role: string
-  credentials: string
-  bookId?: string | null
-  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
-  createdBooks?: Prisma.BookCreateNestedManyWithoutCreatedByUserInput
-  updatedBooks?: Prisma.BookCreateNestedManyWithoutUpdatedByUserInput
-}
-
-export type UserUncheckedCreateWithoutSettingsInput = {
-  id?: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  name: string
-  email: string
-  role: string
-  credentials: string
-  bookId?: string | null
-  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
-  createdBooks?: Prisma.BookUncheckedCreateNestedManyWithoutCreatedByUserInput
-  updatedBooks?: Prisma.BookUncheckedCreateNestedManyWithoutUpdatedByUserInput
-}
-
-export type UserCreateOrConnectWithoutSettingsInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutSettingsInput, Prisma.UserUncheckedCreateWithoutSettingsInput>
-}
-
-export type UserUpsertWithoutSettingsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutSettingsInput, Prisma.UserUncheckedUpdateWithoutSettingsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutSettingsInput, Prisma.UserUncheckedCreateWithoutSettingsInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutSettingsInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutSettingsInput, Prisma.UserUncheckedUpdateWithoutSettingsInput>
-}
-
-export type UserUpdateWithoutSettingsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.StringFieldUpdateOperationsInput | string
-  credentials?: Prisma.StringFieldUpdateOperationsInput | string
-  bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
-  createdBooks?: Prisma.BookUpdateManyWithoutCreatedByUserNestedInput
-  updatedBooks?: Prisma.BookUpdateManyWithoutUpdatedByUserNestedInput
-}
-
-export type UserUncheckedUpdateWithoutSettingsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.StringFieldUpdateOperationsInput | string
-  credentials?: Prisma.StringFieldUpdateOperationsInput | string
-  bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
-  createdBooks?: Prisma.BookUncheckedUpdateManyWithoutCreatedByUserNestedInput
-  updatedBooks?: Prisma.BookUncheckedUpdateManyWithoutUpdatedByUserNestedInput
 }
 
 export type UserCreateWithoutAuditLogsInput = {
@@ -708,7 +607,6 @@ export type UserCreateWithoutAuditLogsInput = {
   role: string
   credentials: string
   bookId?: string | null
-  settings?: Prisma.SettingsCreateNestedOneWithoutUserInput
   createdBooks?: Prisma.BookCreateNestedManyWithoutCreatedByUserInput
   updatedBooks?: Prisma.BookCreateNestedManyWithoutUpdatedByUserInput
 }
@@ -722,7 +620,6 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   role: string
   credentials: string
   bookId?: string | null
-  settings?: Prisma.SettingsUncheckedCreateNestedOneWithoutUserInput
   createdBooks?: Prisma.BookUncheckedCreateNestedManyWithoutCreatedByUserInput
   updatedBooks?: Prisma.BookUncheckedCreateNestedManyWithoutUpdatedByUserInput
 }
@@ -752,7 +649,6 @@ export type UserUpdateWithoutAuditLogsInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string
   credentials?: Prisma.StringFieldUpdateOperationsInput | string
   bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  settings?: Prisma.SettingsUpdateOneWithoutUserNestedInput
   createdBooks?: Prisma.BookUpdateManyWithoutCreatedByUserNestedInput
   updatedBooks?: Prisma.BookUpdateManyWithoutUpdatedByUserNestedInput
 }
@@ -766,7 +662,6 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string
   credentials?: Prisma.StringFieldUpdateOperationsInput | string
   bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  settings?: Prisma.SettingsUncheckedUpdateOneWithoutUserNestedInput
   createdBooks?: Prisma.BookUncheckedUpdateManyWithoutCreatedByUserNestedInput
   updatedBooks?: Prisma.BookUncheckedUpdateManyWithoutUpdatedByUserNestedInput
 }
@@ -829,7 +724,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   role?: boolean
   credentials?: boolean
   bookId?: boolean
-  settings?: boolean | Prisma.User$settingsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   createdBooks?: boolean | Prisma.User$createdBooksArgs<ExtArgs>
   updatedBooks?: boolean | Prisma.User$updatedBooksArgs<ExtArgs>
@@ -871,7 +765,6 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "name" | "email" | "role" | "credentials" | "bookId", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  settings?: boolean | Prisma.User$settingsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   createdBooks?: boolean | Prisma.User$createdBooksArgs<ExtArgs>
   updatedBooks?: boolean | Prisma.User$updatedBooksArgs<ExtArgs>
@@ -883,7 +776,6 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
-    settings: Prisma.$SettingsPayload<ExtArgs> | null
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
     createdBooks: Prisma.$BookPayload<ExtArgs>[]
     updatedBooks: Prisma.$BookPayload<ExtArgs>[]
@@ -1291,7 +1183,6 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  settings<T extends Prisma.User$settingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$settingsArgs<ExtArgs>>): Prisma.Prisma__SettingsClient<runtime.Types.Result.GetResult<Prisma.$SettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   auditLogs<T extends Prisma.User$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdBooks<T extends Prisma.User$createdBooksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdBooksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   updatedBooks<T extends Prisma.User$updatedBooksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$updatedBooksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1715,25 +1606,6 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Users to delete.
    */
   limit?: number
-}
-
-/**
- * User.settings
- */
-export type User$settingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Settings
-   */
-  select?: Prisma.SettingsSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Settings
-   */
-  omit?: Prisma.SettingsOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SettingsInclude<ExtArgs> | null
-  where?: Prisma.SettingsWhereInput
 }
 
 /**

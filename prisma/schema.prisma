@@ -20,7 +20,6 @@ model User {
   email        String     @unique
   role         String
   credentials  String
-  settings     Settings?
   auditLogs    AuditLog[] @relation("AuditLog_actor")
   createdBooks Book[]     @relation("Book_createdBy")
   updatedBooks Book[]     @relation("Book_updatedBy")
@@ -42,19 +41,6 @@ model Book {
   publishedBy   String
 
   @@map("books")
-}
-
-model Settings {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String   @unique // One-to-one constraint
-  user      User     @relation(fields: [userId], references: [id])
-  /// [AuditSettings]
-  auditLog  Json     @default("{\"retention\":{\"days\":30}}")
-  // Can have other settings for that user. Normally users would be a part of tenant so setting should be linked to a tenant
-
-  @@map("settings")
 }
 
 model AuditLog {

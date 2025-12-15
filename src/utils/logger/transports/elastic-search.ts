@@ -1,5 +1,5 @@
 import { TransportTargetOptions } from 'pino';
-import { Config } from 'schema/config';
+import { Config } from '@schema/config';
 
 export function getTransport(log: Config['log']): TransportTargetOptions<Record<string, any>> {
   return {
