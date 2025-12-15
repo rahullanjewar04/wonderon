@@ -465,10 +465,6 @@ export type AuditLogUncheckedUpdateManyWithoutActorNestedInput = {
   deleteMany?: Prisma.AuditLogScalarWhereInput | Prisma.AuditLogScalarWhereInput[]
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type AuditLogCreateWithoutActorInput = {
   id?: string
   timestamp?: Date | string

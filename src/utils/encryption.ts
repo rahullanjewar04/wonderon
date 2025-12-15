@@ -54,4 +54,12 @@ export class CryptoService {
       throw new Error('Decryption failed');
     }
   }
+
+  encode(data: string): string {
+    return Buffer.from(data, ENCODING).toString('base64');
+  }
+
+  decode(data: string): string {
+    return Buffer.from(data, 'base64').toString(ENCODING);
+  }
 }

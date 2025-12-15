@@ -15,8 +15,8 @@ export function getAuditLogRouter() {
   const auditLogService = new AuditLogService(auditLogRepository, logger);
   const auditLogController = new AuditLogController(auditLogService, logger);
 
-  auditRouter.get('/', auditLogController.listLogs);
-  auditRouter.get('/:id', auditLogController.getLog);
+  auditRouter.get('/', auditLogController.listLogs.bind(auditLogController));
+  auditRouter.get('/:id', auditLogController.getLog.bind(auditLogController));
 
   return auditRouter;
 }

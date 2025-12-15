@@ -5,7 +5,6 @@ export function getApiRouter() {
   const apiRouter = Router();
 
   apiRouter.use(express.json());
-
   apiRouter.use('/v1', getV1Router());
 
   return apiRouter;

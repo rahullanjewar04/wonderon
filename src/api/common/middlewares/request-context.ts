@@ -7,7 +7,7 @@ import { Logger } from '@utils/logger';
 export function requestContextMiddleware(req: Request, res: Response, next: NextFunction) {
   const ctx: RequestContext = {
     requestId: randomUUID(),
-    ip: req.ip || req.connection.remoteAddress || 'unknown',
+    ip: req.ip || req.socket.remoteAddress || 'unknown',
     method: req.method,
     path: req.path,
     startTime: Date.now(),

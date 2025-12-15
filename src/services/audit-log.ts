@@ -6,6 +6,7 @@ import { AuditLogRepository } from 'repositories/audit-log';
 import { Prisma } from '@utils/prisma/generated/client';
 import { AuditLogList } from '@schema/audit-log';
 import pino from 'pino';
+import { PaginatedResult } from './types';
 
 export class AuditLogService extends BaseService {
   private auditLogRepository: AuditLogRepository;
@@ -47,6 +48,8 @@ export class AuditLogService extends BaseService {
   }
 
   async logCreate(model: Prisma.ModelName, entityId: string, data: any) {
+    this.logger.debug(`[AuditLogService] Logging create, ${model}, ${entityId}`);
+
     const context = als.getStore()!;
     const sanitizedData = this.maybeSanitize(model, data); // Clone + sanitize
 
@@ -63,6 +66,8 @@ export class AuditLogService extends BaseService {
   }
 
   async logUpdate(model: Prisma.ModelName, entityId: string, oldData: any, newData: any) {
+    this.logger.debug(`[AuditLogService] Logging update, ${model}, ${entityId}`);
+
     const context = als.getStore()!;
     const changes = deepDiffRight(oldData, newData);
     const sanitizedChanges = this.maybeSanitize(model, changes);
@@ -80,6 +85,8 @@ export class AuditLogService extends BaseService {
   }
 
   async logDelete(model: Prisma.ModelName, entityId: string) {
+    this.logger.debug(`[AuditLogService] Logging delete, ${model}, ${entityId}`);
+
     const context = als.getStore()!;
 
     await this.auditLogRepository.create({
@@ -94,10 +101,19 @@ export class AuditLogService extends BaseService {
   }
 
   async getLog(id: string) {
+    this.logger.debug(`[AuditLogService] Getting audit log, ${id}`);
+
     return await this.auditLogRepository.getById(id);
   }
 
-  async listLogs(payload: AuditLogList) {
-    return await this.auditLogRepository.list(payload);
+  async listLogs(payload: AuditLogList): Promise<PaginatedResult<Prisma.AuditLogModel>> {
+    this.logger.debug(`[AuditLogService] Listing audit logs, ${payload}`);
+
+    const items = await this.auditLogRepository.list(payload);
+
+    return {
+      items,
+      cursor: items.length > payload.take ? items[payload.take - 1].id : undefined,
+    };
   }
 }

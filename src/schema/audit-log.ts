@@ -1,5 +1,6 @@
 import { Prisma } from '@utils/prisma/generated/client';
 import z from 'zod';
+import { DEFAULT_TAKE } from './common';
 
 export const schema = z.strictObject({
   entity: z.enum(Prisma.ModelName),
@@ -30,7 +31,7 @@ const listSortEnum = z.enum(listSortKeys);
 
 export const listLogsSchema = z.strictObject({
   filters: listFilters.optional(),
-  take: z.number().min(1).max(100).default(10),
+  take: z.number().min(1).max(100).default(DEFAULT_TAKE),
   sort: z.strictObject({
     field: listSortEnum,
     order: z.enum(['asc', 'desc']),

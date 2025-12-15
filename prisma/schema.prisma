@@ -23,7 +23,6 @@ model User {
   auditLogs    AuditLog[] @relation("AuditLog_actor")
   createdBooks Book[]     @relation("Book_createdBy")
   updatedBooks Book[]     @relation("Book_updatedBy")
-  bookId       String?
 
   @@map("users")
 }
@@ -34,6 +33,7 @@ model Book {
   updatedAt     DateTime @updatedAt
   title         String
   authors       String
+  deleted       Boolean  @default(false)
   createdByUser User     @relation("Book_createdBy", fields: [createdBy], references: [id])
   createdBy     String
   updatedByUser User?    @relation("Book_updatedBy", fields: [updatedBy], references: [id])

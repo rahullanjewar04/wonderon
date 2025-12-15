@@ -32,6 +32,7 @@ export type BookMinAggregateOutputType = {
   updatedAt: Date | null
   title: string | null
   authors: string | null
+  deleted: boolean | null
   createdBy: string | null
   updatedBy: string | null
   publishedBy: string | null
@@ -43,6 +44,7 @@ export type BookMaxAggregateOutputType = {
   updatedAt: Date | null
   title: string | null
   authors: string | null
+  deleted: boolean | null
   createdBy: string | null
   updatedBy: string | null
   publishedBy: string | null
@@ -54,6 +56,7 @@ export type BookCountAggregateOutputType = {
   updatedAt: number
   title: number
   authors: number
+  deleted: number
   createdBy: number
   updatedBy: number
   publishedBy: number
@@ -67,6 +70,7 @@ export type BookMinAggregateInputType = {
   updatedAt?: true
   title?: true
   authors?: true
+  deleted?: true
   createdBy?: true
   updatedBy?: true
   publishedBy?: true
@@ -78,6 +82,7 @@ export type BookMaxAggregateInputType = {
   updatedAt?: true
   title?: true
   authors?: true
+  deleted?: true
   createdBy?: true
   updatedBy?: true
   publishedBy?: true
@@ -89,6 +94,7 @@ export type BookCountAggregateInputType = {
   updatedAt?: true
   title?: true
   authors?: true
+  deleted?: true
   createdBy?: true
   updatedBy?: true
   publishedBy?: true
@@ -173,6 +179,7 @@ export type BookGroupByOutputType = {
   updatedAt: Date
   title: string
   authors: string
+  deleted: boolean
   createdBy: string
   updatedBy: string | null
   publishedBy: string
@@ -205,6 +212,7 @@ export type BookWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Book"> | Date | string
   title?: Prisma.StringFilter<"Book"> | string
   authors?: Prisma.StringFilter<"Book"> | string
+  deleted?: Prisma.BoolFilter<"Book"> | boolean
   createdBy?: Prisma.StringFilter<"Book"> | string
   updatedBy?: Prisma.StringNullableFilter<"Book"> | string | null
   publishedBy?: Prisma.StringFilter<"Book"> | string
@@ -218,6 +226,7 @@ export type BookOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   title?: Prisma.SortOrder
   authors?: Prisma.SortOrder
+  deleted?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   updatedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedBy?: Prisma.SortOrder
@@ -234,6 +243,7 @@ export type BookWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Book"> | Date | string
   title?: Prisma.StringFilter<"Book"> | string
   authors?: Prisma.StringFilter<"Book"> | string
+  deleted?: Prisma.BoolFilter<"Book"> | boolean
   createdBy?: Prisma.StringFilter<"Book"> | string
   updatedBy?: Prisma.StringNullableFilter<"Book"> | string | null
   publishedBy?: Prisma.StringFilter<"Book"> | string
@@ -247,6 +257,7 @@ export type BookOrderByWithAggregationInput = {
   updatedAt?: Prisma.SortOrder
   title?: Prisma.SortOrder
   authors?: Prisma.SortOrder
+  deleted?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   updatedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedBy?: Prisma.SortOrder
@@ -264,6 +275,7 @@ export type BookScalarWhereWithAggregatesInput = {
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Book"> | Date | string
   title?: Prisma.StringWithAggregatesFilter<"Book"> | string
   authors?: Prisma.StringWithAggregatesFilter<"Book"> | string
+  deleted?: Prisma.BoolWithAggregatesFilter<"Book"> | boolean
   createdBy?: Prisma.StringWithAggregatesFilter<"Book"> | string
   updatedBy?: Prisma.StringNullableWithAggregatesFilter<"Book"> | string | null
   publishedBy?: Prisma.StringWithAggregatesFilter<"Book"> | string
@@ -275,6 +287,7 @@ export type BookCreateInput = {
   updatedAt?: Date | string
   title: string
   authors: string
+  deleted?: boolean
   publishedBy: string
   createdByUser: Prisma.UserCreateNestedOneWithoutCreatedBooksInput
   updatedByUser?: Prisma.UserCreateNestedOneWithoutUpdatedBooksInput
@@ -286,6 +299,7 @@ export type BookUncheckedCreateInput = {
   updatedAt?: Date | string
   title: string
   authors: string
+  deleted?: boolean
   createdBy: string
   updatedBy?: string | null
   publishedBy: string
@@ -297,6 +311,7 @@ export type BookUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   authors?: Prisma.StringFieldUpdateOperationsInput | string
+  deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publishedBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdByUser?: Prisma.UserUpdateOneRequiredWithoutCreatedBooksNestedInput
   updatedByUser?: Prisma.UserUpdateOneWithoutUpdatedBooksNestedInput
@@ -308,6 +323,7 @@ export type BookUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   authors?: Prisma.StringFieldUpdateOperationsInput | string
+  deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedBy?: Prisma.StringFieldUpdateOperationsInput | string
@@ -319,6 +335,7 @@ export type BookCreateManyInput = {
   updatedAt?: Date | string
   title: string
   authors: string
+  deleted?: boolean
   createdBy: string
   updatedBy?: string | null
   publishedBy: string
@@ -330,6 +347,7 @@ export type BookUpdateManyMutationInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   authors?: Prisma.StringFieldUpdateOperationsInput | string
+  deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publishedBy?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -339,6 +357,7 @@ export type BookUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   authors?: Prisma.StringFieldUpdateOperationsInput | string
+  deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedBy?: Prisma.StringFieldUpdateOperationsInput | string
@@ -360,6 +379,7 @@ export type BookCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
   title?: Prisma.SortOrder
   authors?: Prisma.SortOrder
+  deleted?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   updatedBy?: Prisma.SortOrder
   publishedBy?: Prisma.SortOrder
@@ -371,6 +391,7 @@ export type BookMaxOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
   title?: Prisma.SortOrder
   authors?: Prisma.SortOrder
+  deleted?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   updatedBy?: Prisma.SortOrder
   publishedBy?: Prisma.SortOrder
@@ -382,6 +403,7 @@ export type BookMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
   title?: Prisma.SortOrder
   authors?: Prisma.SortOrder
+  deleted?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   updatedBy?: Prisma.SortOrder
   publishedBy?: Prisma.SortOrder
@@ -471,12 +493,21 @@ export type BookUncheckedUpdateManyWithoutUpdatedByUserNestedInput = {
   deleteMany?: Prisma.BookScalarWhereInput | Prisma.BookScalarWhereInput[]
 }
 
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
+}
+
 export type BookCreateWithoutCreatedByUserInput = {
   id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   title: string
   authors: string
+  deleted?: boolean
   publishedBy: string
   updatedByUser?: Prisma.UserCreateNestedOneWithoutUpdatedBooksInput
 }
@@ -487,6 +518,7 @@ export type BookUncheckedCreateWithoutCreatedByUserInput = {
   updatedAt?: Date | string
   title: string
   authors: string
+  deleted?: boolean
   updatedBy?: string | null
   publishedBy: string
 }
@@ -506,6 +538,7 @@ export type BookCreateWithoutUpdatedByUserInput = {
   updatedAt?: Date | string
   title: string
   authors: string
+  deleted?: boolean
   publishedBy: string
   createdByUser: Prisma.UserCreateNestedOneWithoutCreatedBooksInput
 }
@@ -516,6 +549,7 @@ export type BookUncheckedCreateWithoutUpdatedByUserInput = {
   updatedAt?: Date | string
   title: string
   authors: string
+  deleted?: boolean
   createdBy: string
   publishedBy: string
 }
@@ -554,6 +588,7 @@ export type BookScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Book"> | Date | string
   title?: Prisma.StringFilter<"Book"> | string
   authors?: Prisma.StringFilter<"Book"> | string
+  deleted?: Prisma.BoolFilter<"Book"> | boolean
   createdBy?: Prisma.StringFilter<"Book"> | string
   updatedBy?: Prisma.StringNullableFilter<"Book"> | string | null
   publishedBy?: Prisma.StringFilter<"Book"> | string
@@ -581,6 +616,7 @@ export type BookCreateManyCreatedByUserInput = {
   updatedAt?: Date | string
   title: string
   authors: string
+  deleted?: boolean
   updatedBy?: string | null
   publishedBy: string
 }
@@ -591,6 +627,7 @@ export type BookCreateManyUpdatedByUserInput = {
   updatedAt?: Date | string
   title: string
   authors: string
+  deleted?: boolean
   createdBy: string
   publishedBy: string
 }
@@ -601,6 +638,7 @@ export type BookUpdateWithoutCreatedByUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   authors?: Prisma.StringFieldUpdateOperationsInput | string
+  deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publishedBy?: Prisma.StringFieldUpdateOperationsInput | string
   updatedByUser?: Prisma.UserUpdateOneWithoutUpdatedBooksNestedInput
 }
@@ -611,6 +649,7 @@ export type BookUncheckedUpdateWithoutCreatedByUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   authors?: Prisma.StringFieldUpdateOperationsInput | string
+  deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedBy?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -621,6 +660,7 @@ export type BookUncheckedUpdateManyWithoutCreatedByUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   authors?: Prisma.StringFieldUpdateOperationsInput | string
+  deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedBy?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -631,6 +671,7 @@ export type BookUpdateWithoutUpdatedByUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   authors?: Prisma.StringFieldUpdateOperationsInput | string
+  deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publishedBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdByUser?: Prisma.UserUpdateOneRequiredWithoutCreatedBooksNestedInput
 }
@@ -641,6 +682,7 @@ export type BookUncheckedUpdateWithoutUpdatedByUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   authors?: Prisma.StringFieldUpdateOperationsInput | string
+  deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   publishedBy?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -651,6 +693,7 @@ export type BookUncheckedUpdateManyWithoutUpdatedByUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   authors?: Prisma.StringFieldUpdateOperationsInput | string
+  deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   publishedBy?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -663,6 +706,7 @@ export type BookSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
   title?: boolean
   authors?: boolean
+  deleted?: boolean
   createdBy?: boolean
   updatedBy?: boolean
   publishedBy?: boolean
@@ -676,6 +720,7 @@ export type BookSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   updatedAt?: boolean
   title?: boolean
   authors?: boolean
+  deleted?: boolean
   createdBy?: boolean
   updatedBy?: boolean
   publishedBy?: boolean
@@ -689,6 +734,7 @@ export type BookSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   updatedAt?: boolean
   title?: boolean
   authors?: boolean
+  deleted?: boolean
   createdBy?: boolean
   updatedBy?: boolean
   publishedBy?: boolean
@@ -702,12 +748,13 @@ export type BookSelectScalar = {
   updatedAt?: boolean
   title?: boolean
   authors?: boolean
+  deleted?: boolean
   createdBy?: boolean
   updatedBy?: boolean
   publishedBy?: boolean
 }
 
-export type BookOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "title" | "authors" | "createdBy" | "updatedBy" | "publishedBy", ExtArgs["result"]["book"]>
+export type BookOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "title" | "authors" | "deleted" | "createdBy" | "updatedBy" | "publishedBy", ExtArgs["result"]["book"]>
 export type BookInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdByUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   updatedByUser?: boolean | Prisma.Book$updatedByUserArgs<ExtArgs>
@@ -733,6 +780,7 @@ export type $BookPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     updatedAt: Date
     title: string
     authors: string
+    deleted: boolean
     createdBy: string
     updatedBy: string | null
     publishedBy: string
@@ -1166,6 +1214,7 @@ export interface BookFieldRefs {
   readonly updatedAt: Prisma.FieldRef<"Book", 'DateTime'>
   readonly title: Prisma.FieldRef<"Book", 'String'>
   readonly authors: Prisma.FieldRef<"Book", 'String'>
+  readonly deleted: Prisma.FieldRef<"Book", 'Boolean'>
   readonly createdBy: Prisma.FieldRef<"Book", 'String'>
   readonly updatedBy: Prisma.FieldRef<"Book", 'String'>
   readonly publishedBy: Prisma.FieldRef<"Book", 'String'>

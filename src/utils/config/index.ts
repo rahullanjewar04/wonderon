@@ -30,9 +30,13 @@ export class AppConfig {
       appConfig.jwt = {
         secret: env.JWT_SECRET || appConfig.jwt.secret,
       };
+
       appConfig.redis = {
         ...appConfig.redis,
-        url: env.REDIS_URL || `redis://${env.REDIS_USERNAME}:${env.REDIS_PASSWORD}@${appConfig.redis.host}`,
+        url:
+          env.REDIS_USERNAME && env.REDIS_PASSWORD
+            ? `redis://${env.REDIS_USERNAME}:${env.REDIS_PASSWORD}@${appConfig.redis.host}`
+            : `redis://${appConfig.redis.host}`,
       };
 
       // Validate the config

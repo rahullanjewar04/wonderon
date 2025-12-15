@@ -34,7 +34,6 @@ export type UserMinAggregateOutputType = {
   email: string | null
   role: string | null
   credentials: string | null
-  bookId: string | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -45,7 +44,6 @@ export type UserMaxAggregateOutputType = {
   email: string | null
   role: string | null
   credentials: string | null
-  bookId: string | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -56,7 +54,6 @@ export type UserCountAggregateOutputType = {
   email: number
   role: number
   credentials: number
-  bookId: number
   _all: number
 }
 
@@ -69,7 +66,6 @@ export type UserMinAggregateInputType = {
   email?: true
   role?: true
   credentials?: true
-  bookId?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -80,7 +76,6 @@ export type UserMaxAggregateInputType = {
   email?: true
   role?: true
   credentials?: true
-  bookId?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -91,7 +86,6 @@ export type UserCountAggregateInputType = {
   email?: true
   role?: true
   credentials?: true
-  bookId?: true
   _all?: true
 }
 
@@ -175,7 +169,6 @@ export type UserGroupByOutputType = {
   email: string
   role: string
   credentials: string
-  bookId: string | null
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
@@ -207,7 +200,6 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string
   role?: Prisma.StringFilter<"User"> | string
   credentials?: Prisma.StringFilter<"User"> | string
-  bookId?: Prisma.StringNullableFilter<"User"> | string | null
   auditLogs?: Prisma.AuditLogListRelationFilter
   createdBooks?: Prisma.BookListRelationFilter
   updatedBooks?: Prisma.BookListRelationFilter
@@ -221,7 +213,6 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   role?: Prisma.SortOrder
   credentials?: Prisma.SortOrder
-  bookId?: Prisma.SortOrderInput | Prisma.SortOrder
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
   createdBooks?: Prisma.BookOrderByRelationAggregateInput
   updatedBooks?: Prisma.BookOrderByRelationAggregateInput
@@ -238,7 +229,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"User"> | string
   role?: Prisma.StringFilter<"User"> | string
   credentials?: Prisma.StringFilter<"User"> | string
-  bookId?: Prisma.StringNullableFilter<"User"> | string | null
   auditLogs?: Prisma.AuditLogListRelationFilter
   createdBooks?: Prisma.BookListRelationFilter
   updatedBooks?: Prisma.BookListRelationFilter
@@ -252,7 +242,6 @@ export type UserOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   role?: Prisma.SortOrder
   credentials?: Prisma.SortOrder
-  bookId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -269,7 +258,6 @@ export type UserScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   role?: Prisma.StringWithAggregatesFilter<"User"> | string
   credentials?: Prisma.StringWithAggregatesFilter<"User"> | string
-  bookId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
 }
 
 export type UserCreateInput = {
@@ -280,7 +268,6 @@ export type UserCreateInput = {
   email: string
   role: string
   credentials: string
-  bookId?: string | null
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
   createdBooks?: Prisma.BookCreateNestedManyWithoutCreatedByUserInput
   updatedBooks?: Prisma.BookCreateNestedManyWithoutUpdatedByUserInput
@@ -294,7 +281,6 @@ export type UserUncheckedCreateInput = {
   email: string
   role: string
   credentials: string
-  bookId?: string | null
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
   createdBooks?: Prisma.BookUncheckedCreateNestedManyWithoutCreatedByUserInput
   updatedBooks?: Prisma.BookUncheckedCreateNestedManyWithoutUpdatedByUserInput
@@ -308,7 +294,6 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.StringFieldUpdateOperationsInput | string
   credentials?: Prisma.StringFieldUpdateOperationsInput | string
-  bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
   createdBooks?: Prisma.BookUpdateManyWithoutCreatedByUserNestedInput
   updatedBooks?: Prisma.BookUpdateManyWithoutUpdatedByUserNestedInput
@@ -322,7 +307,6 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.StringFieldUpdateOperationsInput | string
   credentials?: Prisma.StringFieldUpdateOperationsInput | string
-  bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
   createdBooks?: Prisma.BookUncheckedUpdateManyWithoutCreatedByUserNestedInput
   updatedBooks?: Prisma.BookUncheckedUpdateManyWithoutUpdatedByUserNestedInput
@@ -336,7 +320,6 @@ export type UserCreateManyInput = {
   email: string
   role: string
   credentials: string
-  bookId?: string | null
 }
 
 export type UserUpdateManyMutationInput = {
@@ -347,7 +330,6 @@ export type UserUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.StringFieldUpdateOperationsInput | string
   credentials?: Prisma.StringFieldUpdateOperationsInput | string
-  bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -358,7 +340,6 @@ export type UserUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.StringFieldUpdateOperationsInput | string
   credentials?: Prisma.StringFieldUpdateOperationsInput | string
-  bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -369,7 +350,6 @@ export type UserCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   role?: Prisma.SortOrder
   credentials?: Prisma.SortOrder
-  bookId?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -380,7 +360,6 @@ export type UserMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   role?: Prisma.SortOrder
   credentials?: Prisma.SortOrder
-  bookId?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -391,7 +370,6 @@ export type UserMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   role?: Prisma.SortOrder
   credentials?: Prisma.SortOrder
-  bookId?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -410,10 +388,6 @@ export type StringFieldUpdateOperationsInput = {
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
-}
-
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
 }
 
 export type UserCreateNestedOneWithoutCreatedBooksInput = {
@@ -470,7 +444,6 @@ export type UserCreateWithoutCreatedBooksInput = {
   email: string
   role: string
   credentials: string
-  bookId?: string | null
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
   updatedBooks?: Prisma.BookCreateNestedManyWithoutUpdatedByUserInput
 }
@@ -483,7 +456,6 @@ export type UserUncheckedCreateWithoutCreatedBooksInput = {
   email: string
   role: string
   credentials: string
-  bookId?: string | null
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
   updatedBooks?: Prisma.BookUncheckedCreateNestedManyWithoutUpdatedByUserInput
 }
@@ -501,7 +473,6 @@ export type UserCreateWithoutUpdatedBooksInput = {
   email: string
   role: string
   credentials: string
-  bookId?: string | null
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
   createdBooks?: Prisma.BookCreateNestedManyWithoutCreatedByUserInput
 }
@@ -514,7 +485,6 @@ export type UserUncheckedCreateWithoutUpdatedBooksInput = {
   email: string
   role: string
   credentials: string
-  bookId?: string | null
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
   createdBooks?: Prisma.BookUncheckedCreateNestedManyWithoutCreatedByUserInput
 }
@@ -543,7 +513,6 @@ export type UserUpdateWithoutCreatedBooksInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.StringFieldUpdateOperationsInput | string
   credentials?: Prisma.StringFieldUpdateOperationsInput | string
-  bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
   updatedBooks?: Prisma.BookUpdateManyWithoutUpdatedByUserNestedInput
 }
@@ -556,7 +525,6 @@ export type UserUncheckedUpdateWithoutCreatedBooksInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.StringFieldUpdateOperationsInput | string
   credentials?: Prisma.StringFieldUpdateOperationsInput | string
-  bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
   updatedBooks?: Prisma.BookUncheckedUpdateManyWithoutUpdatedByUserNestedInput
 }
@@ -580,7 +548,6 @@ export type UserUpdateWithoutUpdatedBooksInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.StringFieldUpdateOperationsInput | string
   credentials?: Prisma.StringFieldUpdateOperationsInput | string
-  bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
   createdBooks?: Prisma.BookUpdateManyWithoutCreatedByUserNestedInput
 }
@@ -593,7 +560,6 @@ export type UserUncheckedUpdateWithoutUpdatedBooksInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.StringFieldUpdateOperationsInput | string
   credentials?: Prisma.StringFieldUpdateOperationsInput | string
-  bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
   createdBooks?: Prisma.BookUncheckedUpdateManyWithoutCreatedByUserNestedInput
 }
@@ -606,7 +572,6 @@ export type UserCreateWithoutAuditLogsInput = {
   email: string
   role: string
   credentials: string
-  bookId?: string | null
   createdBooks?: Prisma.BookCreateNestedManyWithoutCreatedByUserInput
   updatedBooks?: Prisma.BookCreateNestedManyWithoutUpdatedByUserInput
 }
@@ -619,7 +584,6 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   email: string
   role: string
   credentials: string
-  bookId?: string | null
   createdBooks?: Prisma.BookUncheckedCreateNestedManyWithoutCreatedByUserInput
   updatedBooks?: Prisma.BookUncheckedCreateNestedManyWithoutUpdatedByUserInput
 }
@@ -648,7 +612,6 @@ export type UserUpdateWithoutAuditLogsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.StringFieldUpdateOperationsInput | string
   credentials?: Prisma.StringFieldUpdateOperationsInput | string
-  bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdBooks?: Prisma.BookUpdateManyWithoutCreatedByUserNestedInput
   updatedBooks?: Prisma.BookUpdateManyWithoutUpdatedByUserNestedInput
 }
@@ -661,7 +624,6 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.StringFieldUpdateOperationsInput | string
   credentials?: Prisma.StringFieldUpdateOperationsInput | string
-  bookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdBooks?: Prisma.BookUncheckedUpdateManyWithoutCreatedByUserNestedInput
   updatedBooks?: Prisma.BookUncheckedUpdateManyWithoutUpdatedByUserNestedInput
 }
@@ -723,7 +685,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   email?: boolean
   role?: boolean
   credentials?: boolean
-  bookId?: boolean
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   createdBooks?: boolean | Prisma.User$createdBooksArgs<ExtArgs>
   updatedBooks?: boolean | Prisma.User$updatedBooksArgs<ExtArgs>
@@ -738,7 +699,6 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   role?: boolean
   credentials?: boolean
-  bookId?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -749,7 +709,6 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   role?: boolean
   credentials?: boolean
-  bookId?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -760,10 +719,9 @@ export type UserSelectScalar = {
   email?: boolean
   role?: boolean
   credentials?: boolean
-  bookId?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "name" | "email" | "role" | "credentials" | "bookId", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "name" | "email" | "role" | "credentials", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   createdBooks?: boolean | Prisma.User$createdBooksArgs<ExtArgs>
@@ -788,7 +746,6 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     email: string
     role: string
     credentials: string
-    bookId: string | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -1222,7 +1179,6 @@ export interface UserFieldRefs {
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'String'>
   readonly credentials: Prisma.FieldRef<"User", 'String'>
-  readonly bookId: Prisma.FieldRef<"User", 'String'>
 }
     
 

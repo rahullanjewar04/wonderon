@@ -20,6 +20,12 @@ else
   echo "ℹ️  config.json already exists (skipped)"
 fi
 
+# Verify if docker exists and is running
+if ! docker info > /dev/null 2>&1; then
+  echo "⚠️  Docker is not running. Please start Docker before running this script."
+  exit 1
+fi
+
 echo "🎉 Setup complete! Files populated where needed."
 echo "💡 Edit .env and config.json with your values before starting."
 echo ""

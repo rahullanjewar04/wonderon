@@ -3,29 +3,14 @@ import { AuditLogService } from '@services/audit-log';
 import { AppError } from '@utils/error';
 import { Request, Response } from 'express';
 import pino from 'pino';
+import { BaseController } from './base';
 
-export class AuditLogController {
+export class AuditLogController extends BaseController {
   private auditLogService: AuditLogService;
-  private logger: pino.Logger;
 
   constructor(auditLogService: AuditLogService, logger: pino.Logger) {
+    super(logger);
     this.auditLogService = auditLogService;
-    this.logger = logger;
-  }
-
-  async listLogs(req: Request, res: Response) {
-    const payload = req.query;
-
-    this.logger.info({
-      message: '[AuditLogController] List audit logs',
-      payload,
-    });
-
-    const data = listLogsSchema.parse(payload);
-
-    const result = await this.auditLogService.listLogs(data);
-
-    res.status(200).send({ items: result });
   }
 
   async getLog(req: Request, res: Response) {
@@ -43,5 +28,20 @@ export class AuditLogController {
     }
 
     res.status(200).send(result);
+  }
+
+  async listLogs(req: Request, res: Response) {
+    const payload = req.query;
+
+    this.logger.info({
+      message: '[AuditLogController] List audit logs',
+      payload,
+    });
+
+    const data = listLogsSchema.parse(payload);
+
+    const result = await this.auditLogService.listLogs(data);
+
+    res.status(200).send({ items: result.items, cursor: result.cursor });
   }
 }

@@ -5,9 +5,12 @@ export interface JwtPayload {
   id: string;
   name: string;
   role: string;
+  email: string;
   iat: number;
   exp: number;
 }
+
+export type CreateJwtPayload = Omit<JwtPayload, 'iat' | 'exp'>;
 
 export class Jwt {
   private static instance: Jwt | null = null;
@@ -26,7 +29,7 @@ export class Jwt {
     }
     return Jwt.instance;
   }
-  createToken(payload: Omit<JwtPayload, 'iat' | 'exp'>): string {
+  createToken(payload: CreateJwtPayload): string {
     const now = Math.floor(Date.now() / 1000);
 
     const fullPayload: JwtPayload = {

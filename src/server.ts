@@ -8,6 +8,7 @@ import { errorHandler } from './api/common/middlewares/error-handler';
 import { requestContextMiddleware } from './api/common/middlewares/request-context';
 import { CryptoService } from '@utils/encryption';
 import { Jwt } from '@utils/jwt';
+import { getRateLimiterMiddleware } from 'api/common/middlewares/rate-limit';
 
 void (async () => {
   const config = AppConfig.getInstance();
@@ -21,6 +22,7 @@ void (async () => {
 
   const app = express();
 
+  app.use(await getRateLimiterMiddleware(config.redis.url, config.ratelimit, logger));
   app.use(requestContextMiddleware);
 
   app.get('/health', (req, res) => {
