@@ -156,8 +156,8 @@ export class BookController extends BaseController {
     };
 
     // If a cursor is provided, add it to the client payload
-    if (payload.cursor) {
-      clientPayload.cursor = payload.cursor;
+    if (payload.nextCursor) {
+      clientPayload.cursor = payload.nextCursor;
     }
 
     // Log the request

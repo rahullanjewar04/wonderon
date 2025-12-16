@@ -2,24 +2,36 @@ import { Request, Response, NextFunction } from 'express';
 import { AppError } from '@utils/error';
 import { Jwt } from '@utils/jwt';
 import { als } from '@utils/async-local-storage';
+import { UserRepository } from 'repositories/user';
+import { PrismaWrapper } from '@utils/prisma';
 
-export function userAuthMiddleware(req: Request, res: Response, next: NextFunction) {
-  const authHeader = req.headers.authorization;
+export function getUserAuthMiddleware() {
+  const userRepository = new UserRepository(PrismaWrapper.getInstance());
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    throw new AppError(AppError.FORBIDDEN, 'Authorization header is missing');
-  }
+  return async function userAuthMiddleware(req: Request, res: Response, next: NextFunction) {
+    const authHeader = req.headers.authorization;
 
-  const token = authHeader.substring(7);
-  const user = Jwt.getInstance().validate(token);
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new AppError(AppError.FORBIDDEN, 'Authorization header is missing');
+    }
 
-  req.user = user;
+    const token = authHeader.substring(7);
+    const user = Jwt.getInstance().validate(token);
 
-  const context = als.getStore();
+    const exists = await userRepository.getById(user.id);
 
-  if (context) {
-    context.userId = user.id;
-  }
+    if (!exists) {
+      throw new AppError(AppError.FORBIDDEN, 'User does not exist');
+    }
 
-  next();
+    req.user = user;
+
+    const context = als.getStore();
+
+    if (context) {
+      context.userId = user.id;
+    }
+
+    next();
+  };
 }

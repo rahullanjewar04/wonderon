@@ -6,8 +6,7 @@ CREATE TABLE "users" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "role" TEXT NOT NULL,
-    "credentials" TEXT NOT NULL,
-    "bookId" TEXT
+    "credentials" TEXT NOT NULL
 );
 
 -- CreateTable
@@ -17,6 +16,7 @@ CREATE TABLE "books" (
     "updatedAt" DATETIME NOT NULL,
     "title" TEXT NOT NULL,
     "authors" TEXT NOT NULL,
+    "deleted" BOOLEAN NOT NULL DEFAULT false,
     "createdBy" TEXT NOT NULL,
     "updatedBy" TEXT,
     "publishedBy" TEXT NOT NULL,
@@ -32,8 +32,8 @@ CREATE TABLE "audit_logs" (
     "entityId" TEXT NOT NULL,
     "action" TEXT NOT NULL,
     "diff" JSONB,
-    "requestId" TEXT NOT NULL,
-    "ip" TEXT NOT NULL,
+    "requestId" TEXT,
+    "ip" TEXT,
     "actorId" TEXT,
     "master" BOOLEAN NOT NULL,
     CONSTRAINT "audit_logs_actorId_fkey" FOREIGN KEY ("actorId") REFERENCES "users" ("id") ON DELETE SET NULL ON UPDATE CASCADE

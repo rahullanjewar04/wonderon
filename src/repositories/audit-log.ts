@@ -35,10 +35,11 @@ export class AuditLogRepository extends BaseRepository {
     });
 
     let whereClause = this.buildWhereClause(payload.filters);
-    const orderBy = payload.sort ? `${payload.sort.field} ${payload.sort.order.toUpperCase()}` : 'id DESC';
+    // Need to add id desc, so if we have duplicates for same timestamp we get the most recent one.
+    const orderBy = payload.sort ? `${payload.sort.field} ${payload.sort.order.toUpperCase()}, id DESC` : 'id DESC';
 
-    const cursorCondition = payload.cursor
-      ? `(${payload.sort!.field} ${payload.sort!.order === 'desc' ? '<' : '>'} (SELECT ${payload.sort!.field} FROM AuditLog WHERE id = '${payload.cursor}' LIMIT 1))`
+    const cursorCondition = payload.nextCursor
+      ? `(${payload.sort!.field} ${payload.sort!.order === 'desc' ? '<' : '>'} (SELECT ${payload.sort!.field} FROM audit_logs WHERE id = '${payload.nextCursor}' LIMIT 1))`
       : '';
 
     if (cursorCondition) {
@@ -78,7 +79,7 @@ export class AuditLogRepository extends BaseRepository {
     if (filters?.action) conditions.push(`action = ${filters.action}`);
     if (filters?.from) conditions.push(`timestamp >= '${filters.from.toISOString()}'`);
     if (filters?.to) conditions.push(`timestamp <= '${filters.to.toISOString()}'`);
-    if (filters?.fieldsChanged.length) {
+    if (filters?.fieldsChanged?.length) {
       conditions.push("action = 'UPDATE'");
       filters.fieldsChanged.forEach((field: string) =>
         conditions.push(`json_extract(diff, '$.${field}.new') IS NOT NULL`),

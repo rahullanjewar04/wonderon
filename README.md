@@ -56,17 +56,16 @@ cp .env.example .env
 cp config.example.json config.json
 # Edit .env if you want to change log transports or DB URL
 ```
-
-1. Run migrations and seed the DB
-```bash
-npx prisma migrate deploy
-node ./dist/migrations/seed.js   # or `npm run seed` if a script exists
-```
-(Alternatively run the TypeScript seed script during development: `ts-node src/migrations/seed.ts`)
-
 1. Start the docker compose (uses redis for rate limiting, could have been simpler with in memory counter)
 ```bash
 docker compose up -d
+```
+
+1. Run migrations and seed the DB
+```bash
+npx prisma
+npx prisma migrate dev --name init
+npm run dev:migrate
 ```
 
 1. Start the dev server

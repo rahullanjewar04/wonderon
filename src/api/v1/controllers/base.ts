@@ -5,8 +5,8 @@ import { DEFAULT_TAKE } from '@schema/common';
 // Types for clarity
 export interface ParsedQueryParams {
   limit: number;
-  cursor?: string;
-  sort: { field: AuditLogListSortKeys | BookListSortKeys; order: 'asc' | 'desc' };
+  nextCursor?: string;
+  sort?: { field: AuditLogListSortKeys | BookListSortKeys; order: 'asc' | 'desc' };
   filters: Record<string, any>;
 }
 
@@ -28,8 +28,11 @@ export class BaseController {
    * @param query - Query object (e.g. from Express)
    * @returns Normalized query parameters
    */
-  parseQueryParams(query: any): ParsedQueryParams {
-    const { limit, cursor, sort, order, ...filters } = query ?? {};
+  parseQueryParams(
+    query: any,
+    defaultSort?: { field: AuditLogListSortKeys | BookListSortKeys; order: 'asc' | 'desc' },
+  ): ParsedQueryParams {
+    const { limit, nextCursor, sort, order, ...filters } = query ?? {};
 
     return {
       /**
@@ -40,7 +43,7 @@ export class BaseController {
       /**
        * Cursor for pagination. No default value.
        */
-      cursor: cursor as string | undefined,
+      nextCursor: nextCursor as string | undefined,
 
       /**
        * Sort options. Defaults to { field: 'timestamp', order: 'desc' }.
@@ -50,13 +53,13 @@ export class BaseController {
             /**
              * Field to sort by. Must be one of AuditLogListSortKeys or BookListSortKeys.
              */
-            field: sort as AuditLogListSortKeys,
+            field: sort as AuditLogListSortKeys | BookListSortKeys,
             /**
              * Sort order. Must be one of 'asc' or 'desc'.
              */
             order: (order ?? 'asc') as 'asc' | 'desc',
           }
-        : { field: 'timestamp', order: 'desc' },
+        : defaultSort,
 
       /**
        * Filter options. No default value.

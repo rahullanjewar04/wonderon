@@ -39,7 +39,7 @@ export const listLogsSchema = z.strictObject({
       order: z.enum(['asc', 'desc']),
     })
     .optional(),
-  cursor: z.string().min(1).optional(),
+  nextCursor: z.string().min(1).optional(),
 });
 
 export type AuditLog = z.infer<typeof schema>;

@@ -55,7 +55,7 @@ export class AuditLogController extends BaseController {
    *   The parameters include the filters, the number of audit logs to take, the cursor to start from, and the sort order.
    */
   async listLogs(req: Request, res: Response) {
-    const payload = this.parseQueryParams(req.query);
+    const payload = this.parseQueryParams(req.query, { field: 'timestamp', order: 'desc' });
 
     // Normalize date filters: convert strings to Date objects if applicable
     let filters = this.normalizeDateFilters(payload.filters);
@@ -73,8 +73,8 @@ export class AuditLogController extends BaseController {
     };
 
     // If a cursor is provided, add it to the client payload
-    if (payload.cursor) {
-      clientPayload.cursor = payload.cursor;
+    if (payload.nextCursor) {
+      clientPayload.nextCursor = payload.nextCursor;
     }
 
     // Log the request

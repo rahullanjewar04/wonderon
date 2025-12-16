@@ -3,8 +3,8 @@
 @userEndpoint={{host}}/api/v1/me
 @auditEndpoint={{host}}/api/v1/audits
 @bookEndpoint={{host}}/api/v1/books
-@Admin1Authorization=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMxYzE3MjQ5LTRiMGUtNDA2Yy1hNjU1LTM4NjFmMmJmZWU5NiIsIm5hbWUiOiJhZG1pbjEiLCJlbWFpbCI6ImFkbWluMUBleGFtcGxlLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2NTkwNzE3MSwiZXhwIjoxNzY2NTExOTcxfQ.0eyJcmBhC0tnMEJUk8jCWDKN3Y02YhiLETHTlLvBc98
-@Admin2Authorization=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE3NmFhMDRlLTlhNGItNDI1My04YWI5LTI5YjAzMTIzYmZkMSIsIm5hbWUiOiJhZG1pbjIiLCJlbWFpbCI6ImFkbWluMkBleGFtcGxlLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2NTkwNzE4NCwiZXhwIjoxNzY2NTExOTg0fQ.wmyM0pzX9kvmyHgyEPCSb2f2cLHXBhua1TwC1ynnTu4
+@Admin1Authorization=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRiM2FjNWJkLWU3NGUtNDRkOS05ZWJiLTU3OTNiZTc3MDUwNSIsIm5hbWUiOiJhZG1pbjEiLCJlbWFpbCI6ImFkbWluMUBleGFtcGxlLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2NTkxNjE5MSwiZXhwIjoxNzY2NTIwOTkxfQ.sJIfkMSx0D_UX3hwYWUJzQDDUEa1weJXFa4H_lcpwJc
+@Admin2Authorization=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImVkY2NkMmNjLTg5NjktNGJhMC04NzNmLTVmN2E4NDRjZmQ0MiIsIm5hbWUiOiJhZG1pbjIiLCJlbWFpbCI6ImFkbWluMkBleGFtcGxlLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2NTkxNzYxMCwiZXhwIjoxNzY2NTIyNDEwfQ.SlHMT2xasvieBckj4vbgsTjf_JgN5wp0Zx-lu-evMEg
 @Reviewer1Authorization=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU5YTk2ODBlLTRkN2UtNDYyOS1hZGFjLTI3ZmI3ZGExYmExNSIsIm5hbWUiOiJyZXZpZXdlcjEiLCJlbWFpbCI6InJldmlld2VyMUBleGFtcGxlLmNvbSIsInJvbGUiOiJyZXZpZXdlciIsImlhdCI6MTc2NTkwNzIwMywiZXhwIjoxNzY2NTEyMDAzfQ.qKM-a71JudnbBNc07WnEr-RBljJV_PWaulqFQAmu_jg
 @Reviewer2Authorization=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM1ZGFkZjVlLWEwNTQtNGI1NS04MjZkLTQwZGFmOTFhNTUzMCIsIm5hbWUiOiJyZXZpZXdlcjIiLCJlbWFpbCI6InJldmlld2VyMkBleGFtcGxlLmNvbSIsInJvbGUiOiJyZXZpZXdlciIsImlhdCI6MTc2NTkwNzIxNSwiZXhwIjoxNzY2NTEyMDE1fQ.-X0YOg12GkxM8DJy5WoJqYNeSuwpYArZVmc0nK1nWx0
 
@@ -28,12 +28,12 @@ Authorization: {{Admin1Authorization}}
 ###
 
 # Get books
-GET {{bookEndpoint}}?limit=5 HTTP/1.1
+GET {{bookEndpoint}} HTTP/1.1
 Authorization: {{Admin1Authorization}}
 ###
 
 # Get book by id
-GET {{bookEndpoint}}/133f2e32-d3a5-4a74-85aa-31decd8b709d HTTP/1.1
+GET {{bookEndpoint}}/7d6fbc7d-c08e-4f48-8eb5-1742da92f957 HTTP/1.1
 Authorization: {{Admin1Authorization}}
 ###
 
@@ -49,8 +49,8 @@ Content-Type: application/json
 ###
 
 # Update book
-PATCH {{bookEndpoint}}/e2392bcf-c755-4486-affc-7b97917eeb85 HTTP/1.1
-Authorization: {{Admin2Authorization}}
+PATCH {{bookEndpoint}}/21f78c2a-8e19-4a22-9414-25a209adead3 HTTP/1.1
+Authorization:  {{Admin2Authorization}}
 Content-Type: application/json
 
 {
@@ -64,7 +64,7 @@ Authorization: {{Admin2Authorization}}
 ###
 
 # Get Audits
-GET {{auditEndpoint}}?limit=25&fieldsChanged=updatedBy HTTP/1.1
+GET {{auditEndpoint}}?limit=1&nextCursor=0b32fc10-a025-405e-8da5-89d806415dbe
 Authorization: {{Admin1Authorization}}
 ###
 
