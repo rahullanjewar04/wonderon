@@ -64,7 +64,7 @@ Authorization: {{Admin2Authorization}}
 ###
 
 # Get Audits
-GET {{auditEndpoint}}?limit=1&nextCursor=0b32fc10-a025-405e-8da5-89d806415dbe
+GET {{auditEndpoint}}
 Authorization: {{Admin1Authorization}}
 ###
 

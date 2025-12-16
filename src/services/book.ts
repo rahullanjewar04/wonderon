@@ -5,6 +5,7 @@ import { BookCreateServer, BookList, BookUpdateServer } from '@schema/book';
 import { PaginatedResult } from './types';
 import { Prisma } from '@utils/prisma/generated/client';
 import { Logger } from '@utils/logger';
+import { AppError } from '@utils/error';
 
 export class BookService extends BaseService {
   private bookRepository: BookRepository;
@@ -38,6 +39,12 @@ export class BookService extends BaseService {
       message: '[BookService] Soft deleting book',
       id,
     });
+
+    // Check if the book exists
+    const book = await this.bookRepository.getById(id);
+    if (!book) {
+      throw new AppError(AppError.NOT_FOUND, 'Book not found');
+    }
 
     return await this.bookRepository.softDelete(id);
   }
