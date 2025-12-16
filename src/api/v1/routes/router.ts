@@ -19,7 +19,7 @@ export function getV1Router() {
 
   // Admin routes
   v1Router.use(adminAuthMiddleware);
-  v1Router.use('/audit', getAuditLogRouter);
+  v1Router.use('/audits', getAuditLogRouter());
 
   return v1Router;
 }

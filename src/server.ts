@@ -18,18 +18,28 @@ void (async () => {
   Jwt.getInstance(config.jwt.secret);
 
   // Initialize Prisma, we do audit logging at prisma
-  PrismaWrapper.getInstance(config.dbUrl, logger);
+  PrismaWrapper.getInstance(config.dbUrl);
 
   const app = express();
 
+  // Initialize rate limiter
   app.use(await getRateLimiterMiddleware(config.redis.url, config.ratelimit, logger));
+
+  // Add request context Middleware
   app.use(requestContextMiddleware);
 
+  // Health endpoint for kubernetes
   app.get('/health', (req, res) => {
     res.status(200).send('OK');
   });
 
+  // Add API routes
   app.use('/api', getApiRouter());
+
+  // 404 handler
+  app.use((req, res) => {
+    res.status(404).send('Not Found');
+  });
 
   // Error handling middleware
   app.use(errorHandler);
@@ -53,7 +63,7 @@ void (async () => {
         logger.error(`Caught exception: ${args[0]}\n` + `Exception origin: ${args[1]}`);
       }
 
-      if (eventType !== 'exit') process.exit();
+      if (eventType !== 'exit') process.exit(0);
     });
   });
 })();

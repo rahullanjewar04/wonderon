@@ -4,6 +4,18 @@ import pino from 'pino';
 import { RateLimiterRedis, RateLimiterRes, RLWrapperBlackAndWhite } from 'rate-limiter-flexible';
 import * as redis from 'redis';
 
+/**
+ * Returns a middleware that applies a rate limit to incoming requests.
+ *
+ * The returned middleware uses a Redis-backed rate limiter to track the
+ * number of requests from each IP address. If the rate limit is exceeded,
+ * the middleware will return a 429 response with a Retry-After header.
+ *
+ * @param {string} redisUrl - The URL of the Redis server to use for rate limiting
+ * @param {Config['ratelimit']} rateLimit - The rate limit configuration
+ * @param {pino.Logger} logger - The logger to use for warning messages
+ * @returns {Handler} A middleware that applies rate limiting to incoming requests
+ */
 export async function getRateLimiterMiddleware(redisUrl: string, rateLimit: Config['ratelimit'], logger: pino.Logger) {
   const redisClient = redis.createClient({
     url: `${redisUrl}/1`,

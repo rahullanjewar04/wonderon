@@ -19,23 +19,26 @@ const listFilters = schema
     from: z.date(),
     to: z.date(),
     fieldsChanged: z.array(z.string().min(1)),
+    timestamp: z.date(),
   })
   .partial();
 
 // Get all top-level keys
-type ListSortKeys = keyof z.infer<typeof listFilters>;
-const listSortKeys = Object.keys(listFilters.shape) as ListSortKeys[];
+export type AuditLogListSortKeys = keyof z.infer<typeof listFilters>;
+const listSortKeys = Object.keys(listFilters.shape) as AuditLogListSortKeys[];
 
 // Create Zod enum from keys
 const listSortEnum = z.enum(listSortKeys);
 
 export const listLogsSchema = z.strictObject({
   filters: listFilters.optional(),
-  take: z.number().min(1).max(100).default(DEFAULT_TAKE),
-  sort: z.strictObject({
-    field: listSortEnum,
-    order: z.enum(['asc', 'desc']),
-  }),
+  take: z.number().min(1).max(100).prefault(DEFAULT_TAKE),
+  sort: z
+    .strictObject({
+      field: listSortEnum,
+      order: z.enum(['asc', 'desc']),
+    })
+    .optional(),
   cursor: z.string().min(1).optional(),
 });
 

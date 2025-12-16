@@ -13,9 +13,9 @@ export function getAuthRouter() {
   const prismaClient = PrismaWrapper.getInstance();
   const logger = Logger.getInstance();
 
-  const userRepository = new UserRepository(prismaClient, logger);
-  const userService = new UserService(userRepository, logger);
-  const userController = new UserController(userService, logger, CryptoService.getInstance(), Jwt.getInstance());
+  const userRepository = new UserRepository(prismaClient);
+  const userService = new UserService(userRepository);
+  const userController = new UserController(userService, CryptoService.getInstance(), Jwt.getInstance());
 
   authRouter.post('/login', userController.login.bind(userController));
   authRouter.post('/logout', userController.logout.bind(userController));

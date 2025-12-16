@@ -25,19 +25,21 @@ export const bookUpdateClient = createOrUpdateSchema
 const listFilters = schema.omit({ deleted: true }).partial();
 
 // Get all top-level keys
-type ListSortKeys = keyof z.infer<typeof listFilters>;
-const listSortKeys = Object.keys(listFilters.shape) as ListSortKeys[];
+export type BookListSortKeys = keyof z.infer<typeof listFilters>;
+const listSortKeys = Object.keys(listFilters.shape) as BookListSortKeys[];
 
 // Create Zod enum from keys
 const listSortEnum = z.enum(listSortKeys);
 
 export const listBooksSchema = z.strictObject({
   filters: listFilters.optional(),
-  take: z.number().min(1).max(100).default(DEFAULT_TAKE),
-  sort: z.strictObject({
-    field: listSortEnum,
-    order: z.enum(['asc', 'desc']),
-  }),
+  take: z.number().min(1).max(100).prefault(DEFAULT_TAKE),
+  sort: z
+    .strictObject({
+      field: listSortEnum,
+      order: z.enum(['asc', 'desc']),
+    })
+    .optional(),
   cursor: z.string().min(1).optional(),
 });
 

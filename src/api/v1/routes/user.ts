@@ -11,13 +11,13 @@ export function getUserRouter() {
   const userRouter = Router();
 
   const prismaClient = PrismaWrapper.getInstance();
-  const logger = Logger.getInstance();
+  Logger.getInstance();
 
-  const userRepository = new UserRepository(prismaClient, logger);
-  const userService = new UserService(userRepository, logger);
-  const userController = new UserController(userService, logger, CryptoService.getInstance(), Jwt.getInstance());
+  const userRepository = new UserRepository(prismaClient);
+  const userService = new UserService(userRepository);
+  const userController = new UserController(userService, CryptoService.getInstance(), Jwt.getInstance());
 
-  userRouter.get('/me', userController.me.bind(userController));
+  userRouter.get('/', userController.me.bind(userController));
 
   return userRouter;
 }

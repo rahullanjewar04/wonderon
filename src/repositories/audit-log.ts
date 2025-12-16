@@ -1,10 +1,14 @@
 import { AuditLog, AuditLogList } from '@schema/audit-log';
 import { BaseRepository } from './base';
 import { AuditLogFindManyArgs } from '@utils/prisma/generated/models';
+import { Logger } from '@utils/logger';
 
 export class AuditLogRepository extends BaseRepository {
   async create(payload: AuditLog) {
-    this.logger.debug(`[AuditLogRepository] Creating audit log, ${payload}`);
+    Logger.getInstance().debug({
+      message: '[AuditLogRepository] Creating audit log',
+      payload,
+    });
 
     return await this.prismaClient.auditLog.create({
       data: payload,
@@ -12,7 +16,10 @@ export class AuditLogRepository extends BaseRepository {
   }
 
   async getById(id: string) {
-    this.logger.debug(`[AuditLogRepository] Getting audit log, ${id}`);
+    Logger.getInstance().debug({
+      message: '[AuditLogRepository] Getting audit log',
+      id,
+    });
 
     return await this.prismaClient.auditLog.findUnique({
       where: {
@@ -22,10 +29,20 @@ export class AuditLogRepository extends BaseRepository {
   }
 
   async list(payload: AuditLogList) {
-    this.logger.debug(`[AuditLogRepository] Listing audit logs, ${payload}`);
+    Logger.getInstance().debug({
+      message: '[AuditLogRepository] Listing audit logs',
+      payload,
+    });
 
     const args: AuditLogFindManyArgs = {
       where: {},
+      take: payload.take + 1,
+      cursor: payload.cursor ? { id: payload.cursor } : undefined,
+      orderBy: payload.sort
+        ? {
+            [payload.sort.field]: payload.sort.order,
+          }
+        : {},
     };
 
     if (payload.filters) {
@@ -44,15 +61,14 @@ export class AuditLogRepository extends BaseRepository {
       }
     }
 
-    return await this.prismaClient.auditLog.findMany({
-      take: payload.take + 1,
-      cursor: { id: payload.cursor },
-      where: args.where,
-    });
+    return await this.prismaClient.auditLog.findMany(args);
   }
 
   async delete(id: string) {
-    this.logger.debug(`[AuditLogRepository] Deleting audit log, ${id}`);
+    Logger.getInstance().debug({
+      message: '[AuditLogRepository] Deleting audit log',
+      id,
+    });
 
     return await this.prismaClient.auditLog.delete({
       where: {

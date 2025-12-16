@@ -1,56 +1,81 @@
 import { BookRepository } from 'repositories/book';
 import { BaseService } from './base';
 import pino from 'pino';
-import { BookCreateServer, BookList } from '@schema/book';
+import { BookCreateServer, BookList, BookUpdateServer } from '@schema/book';
 import { PaginatedResult } from './types';
 import { Prisma } from '@utils/prisma/generated/client';
+import { Logger } from '@utils/logger';
 
 export class BookService extends BaseService {
   private bookRepository: BookRepository;
 
-  constructor(bookRepository: BookRepository, logger: pino.Logger) {
-    super(logger);
+  constructor(bookRepository: BookRepository) {
+    super();
     this.bookRepository = bookRepository;
   }
 
   async create(payload: BookCreateServer) {
-    this.logger.debug(`[BookService] Creating book, ${payload}`);
+    Logger.getInstance().debug({
+      message: '[BookService] Creating book',
+      payload,
+    });
 
     return await this.bookRepository.create(payload);
   }
 
-  async update(id: string, payload: BookCreateServer) {
-    this.logger.debug(`[BookService] Updating book, ${id}`);
+  async update(id: string, payload: BookUpdateServer) {
+    Logger.getInstance().debug({
+      message: '[BookService] Updating book',
+      id,
+      payload,
+    });
 
     return await this.bookRepository.update(id, payload);
   }
 
   async softDelete(id: string) {
-    this.logger.debug(`[BookService] Soft deleting book, ${id}`);
+    Logger.getInstance().debug({
+      message: '[BookService] Soft deleting book',
+      id,
+    });
 
     return await this.bookRepository.softDelete(id);
   }
 
   async hardDelete(id: string) {
-    this.logger.debug(`[BookService] Hard deleting book, ${id}`);
+    Logger.getInstance().debug({
+      message: '[BookService] Hard deleting book',
+      id,
+    });
 
     return await this.bookRepository.hardDelete(id);
   }
 
   async getById(id: string) {
-    this.logger.debug(`[BookService] Getting book, ${id}`);
+    Logger.getInstance().debug({
+      message: '[BookService] Getting book',
+      id,
+    });
 
     return await this.bookRepository.getById(id);
   }
 
   async list(payload: BookList): Promise<PaginatedResult<Prisma.BookModel>> {
-    this.logger.debug(`[BookService] Listing books, ${payload}`);
+    Logger.getInstance().debug({
+      message: '[BookService] Listing books',
+      payload,
+    });
 
     const items = await this.bookRepository.list(payload);
 
-    return {
+    Logger.getInstance().debug({
+      message: '[BookService] Listed books',
       items,
-      cursor: items.length > payload.take ? items[payload.take - 1].id : undefined,
+    });
+
+    return {
+      items: items.slice(0, payload.take),
+      nextCursor: items.length > payload.take ? items[items.length - 1].id : undefined,
     };
   }
 }

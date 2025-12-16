@@ -6,6 +6,7 @@ import pino from 'pino';
 import { AuditLogRepository } from 'repositories/audit-log';
 import { DynamicClientExtensionThis, InternalArgs } from '@prisma/client/runtime/client';
 import { GlobalOmitConfig, TypeMap, TypeMapCb } from './generated/internal/prismaNamespace';
+import { als } from '@utils/async-local-storage';
 
 /**
  * ExtendedPrismaClient is the typed shape used after we attach Prisma client extensions.
@@ -64,14 +65,10 @@ export class PrismaWrapper {
    * @param dbUrl - database connection string (required on first call)
    * @param logger - pino logger (required on first call)
    */
-  static getInstance(dbUrl?: string, logger?: pino.Logger) {
+  static getInstance(dbUrl?: string) {
     if (!PrismaWrapper.instance) {
       if (!dbUrl) {
         throw new Error('dbUrl is required for initial Prisma setup');
-      }
-
-      if (!logger) {
-        throw new Error('logger is required for initial Prisma setup');
       }
 
       const adapter = new PrismaBetterSqlite3({ url: dbUrl });
@@ -84,8 +81,8 @@ export class PrismaWrapper {
       // Create repository/service instances using the extended client and logger.
       // These instances back the audit hooks; we set `PrismaWrapper.auditService`
       // so the runtime closure has a valid reference when hooks run.
-      const auditRepository = new AuditLogRepository(extendedClient, logger);
-      const auditService = new AuditLogService(auditRepository, logger);
+      const auditRepository = new AuditLogRepository(extendedClient);
+      const auditService = new AuditLogService(auditRepository);
 
       PrismaWrapper.auditService = auditService;
       PrismaWrapper.instance = extendedClient;
@@ -105,14 +102,14 @@ export class PrismaWrapper {
    *   infinite loops.
    */
   private static extendClient(client: PrismaClient) {
-    // We intentionally read the singleton auditService (not a local param) so
-    // the hook closure will pick up the instance once it is assigned.
-    const auditService = PrismaWrapper.auditService!;
-
     return client.$extends({
       query: {
         $allModels: {
           async create({ model, args, query }) {
+            // We intentionally read the singleton auditService (not a local param) so
+            // the hook closure will pick up the instance once it is assigned.
+            const auditService = PrismaWrapper.auditService!;
+
             // Execute the original query first. We don't want the audit write to
             // affect the original operation or be included in the same returned result.
             const result = await query(args); // Fix: Execute first, then audit
@@ -128,16 +125,20 @@ export class PrismaWrapper {
           },
 
           async update({ model, args, query }) {
+            // We intentionally read the singleton auditService (not a local param) so
+            // the hook closure will pick up the instance once it is assigned.
+            const auditService = PrismaWrapper.auditService!;
+
             // Run the update and capture the resulting record.
             const result = await query(args); // Fix: Execute first, capture result
             if (model === 'AuditLog') {
               return result;
             }
 
-            const tableName = modelTables[model];
+            const context = als.getStore();
             // Attempt to fetch the previous state for a proper diff; this may be `null`
             // for some update shapes — callers must handle that.
-            const oldRecord = await (client as any)[tableName].findUnique({ where: args.where });
+            const oldRecord = context?.oldData ?? {};
             await auditService.logUpdate(model, args.where.id!, oldRecord, result);
             return result;
           },
@@ -147,6 +148,10 @@ export class PrismaWrapper {
            * The hook captures the deleted record and then emits an audit entry.
            */
           async delete({ model, args, query }) {
+            // We intentionally read the singleton auditService (not a local param) so
+            // the hook closure will pick up the instance once it is assigned.
+            const auditService = PrismaWrapper.auditService!;
+
             // Execute the delete and capture the deleted object.
             const result = await query(args); // Fix: Capture deleted record
             if (model === 'AuditLog') {

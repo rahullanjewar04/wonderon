@@ -8,12 +8,12 @@ import { seed } from './migrations/seed';
 void (async () => {
   const config = AppConfig.getInstance();
 
-  const logger = Logger.getInstance(config.log);
+  Logger.getInstance(config.log);
   CryptoService.getInstance(config.encryptionKey);
   Jwt.getInstance(config.jwt.secret);
 
   // Initialize Prisma, we do audit logging at prisma
-  PrismaWrapper.getInstance(config.dbUrl, logger);
+  PrismaWrapper.getInstance(config.dbUrl);
 
   // Seed the database with dummy data
   await seed();

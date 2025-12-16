@@ -10,8 +10,8 @@ import { BookRepository } from 'repositories/book';
 import { UserRepository } from 'repositories/user';
 
 async function seedUsers(users: UserCreateServer[]): Promise<Prisma.UserModel[]> {
-  const userRepository = new UserRepository(PrismaWrapper.getInstance(), Logger.getInstance());
-  const userService = new UserService(userRepository, Logger.getInstance());
+  const userRepository = new UserRepository(PrismaWrapper.getInstance());
+  const userService = new UserService(userRepository);
 
   Logger.getInstance().info(`[UserService] Seeding ${users.length} users`);
 
@@ -37,8 +37,8 @@ async function seedUsers(users: UserCreateServer[]): Promise<Prisma.UserModel[]>
 }
 
 async function seedBooks(users: Prisma.UserModel[]) {
-  const bookRepository = new BookRepository(PrismaWrapper.getInstance(), Logger.getInstance());
-  const bookService = new BookService(bookRepository, Logger.getInstance());
+  const bookRepository = new BookRepository(PrismaWrapper.getInstance());
+  const bookService = new BookService(bookRepository);
 
   Logger.getInstance().info(`[BookService] Seeding ${users.length} books`);
 

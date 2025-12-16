@@ -9,16 +9,15 @@ export function getBookRouter() {
   const bookRouter = Router();
 
   const prismaClient = PrismaWrapper.getInstance();
-  const logger = Logger.getInstance();
 
-  const bookRepository = new BookRepository(prismaClient, logger);
-  const bookService = new BookService(bookRepository, logger);
-  const bookController = new BookController(bookService, logger);
+  const bookRepository = new BookRepository(prismaClient);
+  const bookService = new BookService(bookRepository);
+  const bookController = new BookController(bookService);
 
   bookRouter.get('/', bookController.list.bind(bookController));
-  bookRouter.get('/:id', bookController.getById.bind(bookController));
   bookRouter.post('/', bookController.create.bind(bookController));
-  bookRouter.put('/:id', bookController.update.bind(bookController));
+  bookRouter.get('/:id', bookController.getById.bind(bookController));
+  bookRouter.patch('/:id', bookController.update.bind(bookController));
   bookRouter.delete('/:id', bookController.delete.bind(bookController));
 
   return bookRouter;

@@ -1,19 +1,34 @@
-import { BookCreateServer, BookList } from '@schema/book';
+import { BookCreateServer, BookList, BookUpdateServer } from '@schema/book';
 import { BaseRepository } from './base';
 import { BookFindManyArgs } from '@utils/prisma/generated/models';
 import { Prisma } from '@utils/prisma/generated/client';
+import { Logger } from '@utils/logger';
+import { als } from '@utils/async-local-storage';
 
 export class BookRepository extends BaseRepository {
   async create(payload: BookCreateServer) {
-    this.logger.debug(`[BookRepository] Creating book, ${payload}`);
+    Logger.getInstance().debug({
+      message: '[BookRepository] Creating book',
+      payload,
+    });
 
     return await this.prismaClient.book.create({
       data: payload,
     });
   }
 
-  async update(id: string, payload: BookCreateServer) {
-    this.logger.debug(`[BookRepository] Updating book, ${id}`);
+  async update(id: string, payload: BookUpdateServer) {
+    Logger.getInstance().debug({
+      message: '[BookRepository] Updating book',
+      id,
+      payload,
+    });
+
+    const context = als.getStore();
+
+    if (context) {
+      context.oldData = await this.getById(id);
+    }
 
     return await this.prismaClient.book.update({
       where: {
@@ -24,7 +39,10 @@ export class BookRepository extends BaseRepository {
   }
 
   async getById(id: string) {
-    this.logger.debug(`[BookRepository] Getting book, ${id}`);
+    Logger.getInstance().debug({
+      message: '[BookRepository] Getting book',
+      id,
+    });
 
     return await this.prismaClient.book.findUnique({
       where: {
@@ -34,7 +52,10 @@ export class BookRepository extends BaseRepository {
   }
 
   async softDelete(id: string) {
-    this.logger.debug(`[BookRepository] Soft deleting book, ${id}`);
+    Logger.getInstance().debug({
+      message: '[BookRepository] Soft deleting book',
+      id,
+    });
 
     return await this.prismaClient.book.update({
       where: {
@@ -47,7 +68,10 @@ export class BookRepository extends BaseRepository {
   }
 
   async hardDelete(id: string) {
-    this.logger.debug(`[BookRepository] Deleting book, ${id}`);
+    Logger.getInstance().debug({
+      message: '[BookRepository] Hard deleting book',
+      id,
+    });
 
     return await this.prismaClient.book.delete({
       where: {
@@ -57,10 +81,20 @@ export class BookRepository extends BaseRepository {
   }
 
   async list(payload: BookList): Promise<Prisma.BookModel[]> {
-    this.logger.debug(`[BookRepository] Listing books`);
+    Logger.getInstance().debug({
+      message: '[BookRepository] Listing books',
+      payload,
+    });
 
     const args: BookFindManyArgs = {
       where: {},
+      take: payload.take + 1,
+      cursor: payload.cursor ? { id: payload.cursor } : undefined,
+      orderBy: payload.sort
+        ? {
+            [payload.sort.field]: payload.sort.order,
+          }
+        : {},
     };
 
     if (payload.filters) {
@@ -73,10 +107,6 @@ export class BookRepository extends BaseRepository {
     // Always list only the books that are not deleted
     args.where!['deleted'] = false;
 
-    return await this.prismaClient.book.findMany({
-      take: payload.take + 1,
-      cursor: { id: payload.cursor },
-      where: args.where,
-    });
+    return await this.prismaClient.book.findMany(args);
   }
 }

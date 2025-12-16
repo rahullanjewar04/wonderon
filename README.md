@@ -1,111 +1,143 @@
-Book Management — README
+# Book Publishing API
 
 Overview
-This repository powers a small Book Management backend API written in TypeScript using Express and Prisma. It includes request-scoped logging, audit logging via Prisma extensions, Zod schemas for validation, and a small set of services/repositories/controllers.
+--------
+A minimal Book Publishing API (TypeScript + Node.js) focused on observability and a config-driven audit trail. This README explains how to run the project locally, why the chosen database was used, how to switch logging sinks, the audit configuration, example cURL flows, and a brief codebase evaluation against the assignment criteria.
 
-Quick links
-- Server entry: [`src/server.ts`](src/server.ts)
-- Prisma wrapper and audit wiring: [`src/utils/prisma/index.ts`](src/utils/prisma/index.ts)
+Quick links to important files
 - Audit service: [`src/services/audit-log.ts`](src/services/audit-log.ts)
-- Audit router: [`src/api/v1/routes/audit-log.ts`](src/api/v1/routes/audit-log.ts)
-- Audit controller: [`src/api/v1/controllers/audit-log.ts`](src/api/v1/controllers/audit-log.ts)
-- Prisma schema: [`prisma/schema.prisma`](prisma/schema.prisma)
-- Project manifest: [`package.json`](package.json)
-- TypeScript config: [`tsconfig.json`](tsconfig.json)
-- Production-readiness notes: [`plans/production-readiness-2.md`](plans/production-readiness-2.md)
+- Audit repository: [`src/repositories/audit-log.ts`](src/repositories/audit-log.ts)
+- Request context (AsyncLocalStorage): [`src/api/common/middlewares/request-context.ts`](src/api/common/middlewares/request-context.ts)
+- Logger factory: [`src/utils/logger/index.ts`](src/utils/logger/index.ts)
+- Seed script (users + sample books): [`src/migrations/seed.ts`](src/migrations/seed.ts)
+- Prisma schema / DB config: [`prisma/schema.prisma`](prisma/schema.prisma)
 
-Prerequisites
-- Node.js (recommended v18+)
-- npm (or an alternative package manager)
-- Git
-- Docker (optional, for containerized runs)
+Requirements
+------------
+- Node.js >= 20
+- npm (or yarn)
+- (Optional) Docker if you prefer running a different DB than the default
 
-Environment
-- Copy and edit environment variables from the example file:
-  - `.env` (create from) [`.env.example`](.env.example)
-- Important config is read through the central config utility. Ensure values for DB (dbUrl), JWT secret, encryption key, logger transports, and Redis are provided for the environment you run in.
-  - `.config.json` (create from) [`.config.example.json`](config.example.json)
+Rationale for DB choice
+-----------------------
+This repo includes Prisma and a `prisma/` folder; chosen SQLite for local ease-of-use (single-file DB, zero ops). SQLite is ideal for a demo: quick migrations, repeatable seeds, and no external dependencies. See [`prisma/schema.prisma`](prisma/schema.prisma).
 
-Local development — quick start
-1. Install dependencies:
-   - `npm install`
-2. Generate Prisma client (keeps generated client in sync):
-   - `npx prisma generate`
-3. Run migrations (creates/updates local DB schema):
-   - `npx prisma migrate deploy`
-   - OR for development (creates a new migration):
-     - `npx prisma migrate dev --name init`
-   Note: The project uses SQLite by default in the schema. If you change the DB provider, update config accordingly.
-4. Start the docker dependencies (optional)
-   - `docker compose up -d`
-5. Start the server in development:
-   - `npm run dev`
-6. Health check:
-   - GET http://localhost:<PORT>/health
-   - Default port is defined in your app config (see [`config.json`](config.json) startup logs).
+Setup (local)
+-------------
+1. Install dependencies
+```bash
+npm install
+```
 
-Prisma commands you will likely use
-- Generate client:
-  - `npx prisma generate`
-- Create a new migration (dev):
-  - `npx prisma migrate dev --name <description>`
-- Apply migrations (CI / production):
-  - `npx prisma migrate deploy`
-- Open Prisma Studio to inspect DB:
-  - `npx prisma studio`
-- If you need to reset the local DB (dangerous, destructive):
-  - `npx prisma migrate reset`
+2. Copy env example and edit if desired [example env](.env.example)
+```bash
+cp .env.example .env
+# Edit .env if you want to change log transports or DB URL
+```
 
-Project structure (high level)
-- src/
-  - server.ts — application entry and startup wiring (`[`src/server.ts`](src/server.ts)`)
-  - api/
-    - router.ts — API-level router (`[`src/api/router.ts`](src/api/router.ts)`)
-    - v1/
-      - routes/ — route factories (register routers)
-        - [`src/api/v1/routes/audit-log.ts`](src/api/v1/routes/audit-log.ts)
-      - controllers/ — controller classes that handle requests
-        - [`src/api/v1/controllers/audit-log.ts`](src/api/v1/controllers/audit-log.ts)
-      - middlewares/ — route-specific middleware (auth, admin, etc.)
-  - services/ — business logic / service layer
-    - [`src/services/audit-log.ts`](src/services/audit-log.ts)
-  - repositories/ — DB access, one-per-model
-    - [`src/repositories/audit-log.ts`](src/repositories/audit-log.ts)
-  - utils/
-    - prisma/ — prisma client wrapper and generated client (`[`src/utils/prisma/index.ts`](src/utils/prisma/index.ts)`, [`prisma/schema.prisma`](prisma/schema.prisma))
-    - logger/ — logger wrapper and transports
-    - async-local-storage/ — request context helpers
-    - audit/ — audit configuration
-  - schema/ — Zod schemas for request/response validation
-- prisma/ — Prisma schema and migrations (`[`prisma/schema.prisma`](prisma/schema.prisma)`)
+3. Copy config example and edit if desired [example config](config.example.json)
+```bash
+cp config.example.json config.json
+# Edit .env if you want to change log transports or DB URL
+```
 
-How routing and wiring generally works
-- Server startup (`[`src/server.ts`](src/server.ts)`) initializes config, logger, and the Prisma wrapper.
-- The API router is mounted at /api; v1 routes created under [`src/api/v1/routes/router.ts`](src/api/v1/routes/router.ts).
-- Route factories currently create repository/service/controller instances. For singletons or shared instances, wiring should be centralized in startup (we recommend moving instantiation to a single initializer).
+4. Run migrations and seed the DB
+```bash
+npx prisma migrate deploy
+node ./dist/migrations/seed.js   # or `npm run seed` if a script exists
+```
+(Alternatively run the TypeScript seed script during development: `ts-node src/migrations/seed.ts`)
 
-Logging and request context
-- The app uses pino for structured logs through a `Logger` singleton (`[`src/utils/logger/index.ts`](src/utils/logger/index.ts)`).
-- Request context (requestId, ip, etc.) is captured using async local storage middleware — this gives you per-request child loggers and consistent requestId in logs.
+5. Start the dev server
+```bash
+npm run dev
+```
 
-Audit logging notes
-- Audit logs are implemented in a service (`[`src/services/audit-log.ts`](src/services/audit-log.ts)`) and Prisma client is extended to call audit hooks on create/update/delete.
-- Be careful with initialization ordering: the audit service must be created before the Prisma extensions that reference it are attached — otherwise hooks may reference an uninitialized service.
+6. Launch Prisma studio for verifying data in database.
+```bash
+npx prisma studio
+```
 
-Testing
-- There are no tests currently in package.json. Recommended next steps:
-  - Add unit tests for services and repositories (Jest/Vitest).
-  - Add integration tests that run against a disposable DB (sqlite in-memory or a dedicated dockerized DB).
+Auth & seeds
+-----------
+A small seed creates two users (admin & reviewer) and a few books. See [`src/migrations/seed.ts`](src/migrations/seed.ts). Authentication uses JWT via [`src/api/v1/middlewares/auth.ts`](src/api/v1/middlewares/auth.ts) (expects `Authorization: Bearer <token>`). The seed script prints (or stores) the sample tokens / API keys—look at the seed script output.
 
-Common operations
-- Build for production:
-  - npm run build
-- Run production bundle after build:
-  - npm start
-- Linting: configured via eslint; run eslint as needed.
+Switching log sinks
+-------------------
+Logging is centralized in the `Logger` class: [`src/utils/logger/index.ts`](src/utils/logger/index.ts). The logger reads configuration (see `config.example.json` / `.env`) and builds transports. Supported transports:
+- file (`file`) — local file transport (default)
+- logtail (`logtail`) — pino transport code path is present [logtail](src/utils/logger/transports/logtail.ts)
+- elasticsearch (`elasticsearch`) — code path present [elasticsearch](src/utils/logger/transports/elastic-search.ts)
 
-Security and production recommendations (short)
-- Use a secrets manager for JWT/encryption keys in production.
-- Add rate limiting (there is a placeholder rate-limit middleware used in startup).
-- Add monitoring (metrics + traces) and an error aggregation tool.
+To change transports:
+1. Edit your config (env or `config.json`) and set `log.transports` to the desired array.
+2. Restart the server. The `Logger.getInstance()` picks transports at startup.
 
+Audit configuration
+-------------------
+Audit behavior is configuration-driven. The project centralizes audit rules so adding a new entity is a config change + optional hook registration. See the audit config and sanitizer behavior in [`src/utils/audit.ts`](src/utils/audit.ts) and the service in [`src/services/audit-log.ts`](src/services/audit-log.ts). Typical config looks like:
+
+[`typescript()`](src/utils/audit.ts)
+```ts
+export const auditConfig = {
+  book: { track: true, exclude: ['updatedAt'], redact: [] },
+  user: { track: true, exclude: ['credentials'], redact: ['credentials'] },
+} as const;
+```
+
+What an audit record contains
+- id, timestamp, entity, entityId, action (CREATE|UPDATE|DELETE), actorId, requestId, ip, diff (respecting exclude/redact)
+
+API Endpoints (high-level)
+--------------------------
+- Books
+  - GET /api/books?limit=&cursor= — paginated list
+  - POST /api/books — create (createdBy set from auth)
+  - GET /api/books/:id
+  - PATCH /api/books/:id
+  - DELETE /api/books/:id
+- Audits (admin-only)
+  - GET /api/audits?...filters...
+  - GET /api/audits/:id
+See router definitions: [`src/api/v1/routes/router.ts`](src/api/v1/routes/router.ts) and controllers: [`src/api/v1/controllers/book.ts`](src/api/v1/controllers/book.ts), [`src/api/v1/controllers/audit-log.ts`](src/api/v1/controllers/audit-log.ts).
+
+Example Rest Client flows
+-----------------
+The api can be tested using [rest client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) vscode extension. Check file [rest](rest.http)
+
+Example cURL flows
+------------------
+1) Create a book (authenticated) [route](src/api/v1/routes/book.ts)
+```bash
+curl -X POST http://localhost:3000/api/books \
+  -H "Authorization: Bearer <ADMIN_JWT>" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Demo Book","authors":"Author A","publishedBy":"Publisher"}'
+```
+
+1) Update a book [route](src/api/v1/controllers/book.ts)
+```bash
+curl -X PATCH http://localhost:3000/api/books/<BOOK_ID> \
+  -H "Authorization: Bearer <ADMIN_JWT>" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Demo Book v2"}'
+```
+
+1) List audits (admin) [route](src/api/v1/routes/audit-log.ts)
+```bash
+curl "http://localhost:3000/api/audits?entity=book&limit=20" \
+  -H "Authorization: Bearer <ADMIN_JWT>"
+```
+
+1) Get single audit record [route](src/repositories/audit-log.ts)
+```bash
+curl http://localhost:3000/api/audits/<AUDIT_ID> \
+  -H "Authorization: Bearer <ADMIN_JWT>"
+```
+
+Developer notes & important internals
+------------------------------------
+- Request context propagation (requestId, userId, startTime) uses AsyncLocalStorage: [`src/api/common/middlewares/request-context.ts`](src/api/common/middlewares/request-context.ts) and utilities in [`src/utils/async-local-storage.ts`](src/utils/async-local-storage.ts).
+- Logger is pino-based with transport builders in [`src/utils/logger/transports/`](src/utils/logger/transports/logtail.ts), [`src/utils/logger/transports/file.ts`](src/utils/logger/transports/file.ts), [`src/utils/logger/transports/elastic-search.ts`](src/utils/logger/transports/elastic-search.ts).
+- Audit creation points are in services and repository hooks; see [`src/services/audit-log.ts`](src/services/audit-log.ts).
+- Centralized error handling: [`src/api/common/middlewares/error-handler.ts`](src/api/common/middlewares/error-handler.ts).

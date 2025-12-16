@@ -1,0 +1,69 @@
+@host= http://localhost:1337
+@authEndpoint={{host}}/api/v1/auth
+@userEndpoint={{host}}/api/v1/me
+@auditEndpoint={{host}}/api/v1/audits
+@bookEndpoint={{host}}/api/v1/books
+@Admin1Authorization=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMxYzE3MjQ5LTRiMGUtNDA2Yy1hNjU1LTM4NjFmMmJmZWU5NiIsIm5hbWUiOiJhZG1pbjEiLCJlbWFpbCI6ImFkbWluMUBleGFtcGxlLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2NTkwNzE3MSwiZXhwIjoxNzY2NTExOTcxfQ.0eyJcmBhC0tnMEJUk8jCWDKN3Y02YhiLETHTlLvBc98
+@Admin2Authorization=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE3NmFhMDRlLTlhNGItNDI1My04YWI5LTI5YjAzMTIzYmZkMSIsIm5hbWUiOiJhZG1pbjIiLCJlbWFpbCI6ImFkbWluMkBleGFtcGxlLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2NTkwNzE4NCwiZXhwIjoxNzY2NTExOTg0fQ.wmyM0pzX9kvmyHgyEPCSb2f2cLHXBhua1TwC1ynnTu4
+@Reviewer1Authorization=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU5YTk2ODBlLTRkN2UtNDYyOS1hZGFjLTI3ZmI3ZGExYmExNSIsIm5hbWUiOiJyZXZpZXdlcjEiLCJlbWFpbCI6InJldmlld2VyMUBleGFtcGxlLmNvbSIsInJvbGUiOiJyZXZpZXdlciIsImlhdCI6MTc2NTkwNzIwMywiZXhwIjoxNzY2NTEyMDAzfQ.qKM-a71JudnbBNc07WnEr-RBljJV_PWaulqFQAmu_jg
+@Reviewer2Authorization=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM1ZGFkZjVlLWEwNTQtNGI1NS04MjZkLTQwZGFmOTFhNTUzMCIsIm5hbWUiOiJyZXZpZXdlcjIiLCJlbWFpbCI6InJldmlld2VyMkBleGFtcGxlLmNvbSIsInJvbGUiOiJyZXZpZXdlciIsImlhdCI6MTc2NTkwNzIxNSwiZXhwIjoxNzY2NTEyMDE1fQ.-X0YOg12GkxM8DJy5WoJqYNeSuwpYArZVmc0nK1nWx0
+
+# Catch all not found route
+GET {{host}} HTTP/1.1
+###
+
+# Login as admins, update the token in the token variable after login
+POST {{authEndpoint}}/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email":"admin1@example.com",
+  "credentials":"admin123"
+}
+###
+
+# Get user profile
+GET {{userEndpoint}} HTTP/1.1
+Authorization: {{Admin1Authorization}}
+###
+
+# Get books
+GET {{bookEndpoint}}?limit=5 HTTP/1.1
+Authorization: {{Admin1Authorization}}
+###
+
+# Get book by id
+GET {{bookEndpoint}}/133f2e32-d3a5-4a74-85aa-31decd8b709d HTTP/1.1
+Authorization: {{Admin1Authorization}}
+###
+
+# Create a book
+POST {{bookEndpoint}} HTTP/1.1
+Authorization: {{Admin1Authorization}}
+Content-Type: application/json
+
+{
+  "title":"from rest 2",
+  "authors": "rahul"
+}
+###
+
+# Update book
+PATCH {{bookEndpoint}}/63132424-3fb1-489f-9339-cccc9bdbe6ad HTTP/1.1
+Authorization: {{Admin2Authorization}}
+Content-Type: application/json
+
+{
+  "title":"from api, updated new 1234"
+}
+###
+
+# Delete book
+DELETE {{bookEndpoint}}/e92414d4-2282-4cac-933d-47bd3b1e7ab0 HTTP/1.1
+Authorization: {{Admin2Authorization}}
+###
+
+# Get Audits
+GET {{auditEndpoint}}?limit=25&cursor=243810f9-7f55-4a9c-b87b-eabe4ae17009
+Authorization: {{Admin1Authorization}}
+###

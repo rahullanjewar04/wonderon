@@ -5,8 +5,8 @@ import { BaseService } from './base';
 import { AuditLogRepository } from 'repositories/audit-log';
 import { Prisma } from '@utils/prisma/generated/client';
 import { AuditLogList } from '@schema/audit-log';
-import pino from 'pino';
 import { PaginatedResult } from './types';
+import { Logger } from '@utils/logger';
 
 /**
  * AuditLogService
@@ -24,9 +24,9 @@ import { PaginatedResult } from './types';
 export class AuditLogService extends BaseService {
   private auditLogRepository: AuditLogRepository;
 
-  constructor(auditLogRepository: AuditLogRepository, logger: pino.Logger) {
+  constructor(auditLogRepository: AuditLogRepository) {
     // The logger is a pino child injected by the caller; keep BaseService behavior.
-    super(logger);
+    super();
     this.auditLogRepository = auditLogRepository;
   }
 
@@ -75,7 +75,7 @@ export class AuditLogService extends BaseService {
    * from async-local-storage so callers don't need to pass context explicitly.
    */
   async logCreate(model: Prisma.ModelName, entityId: string, data: any) {
-    this.logger.debug(`[AuditLogService] Logging create, ${model}, ${entityId}`);
+    Logger.getInstance().debug(`[AuditLogService] Logging create, ${model}, ${entityId}`);
 
     const context = als.getStore();
     const sanitizedData = this.maybeSanitize(model, data); // Clone + sanitize
@@ -101,7 +101,11 @@ export class AuditLogService extends BaseService {
    * suitable for storing in the audit diff JSON column.
    */
   async logUpdate(model: Prisma.ModelName, entityId: string, oldData: any, newData: any) {
-    this.logger.debug(`[AuditLogService] Logging update, ${model}, ${entityId}`);
+    Logger.getInstance().debug({
+      message: '[AuditLogService] Logging update',
+      model,
+      entityId,
+    });
 
     const context = als.getStore();
     const changes = deepDiffRight(oldData, newData);
@@ -127,7 +131,11 @@ export class AuditLogService extends BaseService {
    * the deleted record.
    */
   async logDelete(model: Prisma.ModelName, entityId: string) {
-    this.logger.debug(`[AuditLogService] Logging delete, ${model}, ${entityId}`);
+    Logger.getInstance().debug({
+      message: '[AuditLogService] Logging delete',
+      model,
+      entityId,
+    });
 
     const context = als.getStore();
 
@@ -144,20 +152,26 @@ export class AuditLogService extends BaseService {
 
   // Retrieve a single audit log entry by id.
   async getLog(id: string) {
-    this.logger.debug(`[AuditLogService] Getting audit log, ${id}`);
+    Logger.getInstance().debug({
+      message: '[AuditLogService] Getting audit log',
+      id,
+    });
 
     return await this.auditLogRepository.getById(id);
   }
 
   // List audit logs with pagination; wrap repository result in a small shape.
   async listLogs(payload: AuditLogList): Promise<PaginatedResult<Prisma.AuditLogModel>> {
-    this.logger.debug(`[AuditLogService] Listing audit logs, ${payload}`);
+    Logger.getInstance().debug({
+      message: '[AuditLogService] Listing audit logs',
+      payload,
+    });
 
     const items = await this.auditLogRepository.list(payload);
 
     return {
-      items,
-      cursor: items.length > payload.take ? items[payload.take - 1].id : undefined,
+      items: items.slice(0, payload.take),
+      nextCursor: items.length > payload.take ? items[items.length - 1].id : undefined,
     };
   }
 }
