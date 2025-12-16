@@ -1,6 +1,6 @@
 import { AuditLog, AuditLogList } from '@schema/audit-log';
 import { BaseRepository } from './base';
-import { AuditLogFindManyArgs } from '@utils/prisma/generated/models';
+import { AuditLogFindManyArgs, AuditLogModel } from '@utils/prisma/generated/models';
 import { Logger } from '@utils/logger';
 
 export class AuditLogRepository extends BaseRepository {
@@ -34,34 +34,27 @@ export class AuditLogRepository extends BaseRepository {
       payload,
     });
 
-    const args: AuditLogFindManyArgs = {
-      where: {},
-      take: payload.take + 1,
-      cursor: payload.cursor ? { id: payload.cursor } : undefined,
-      orderBy: payload.sort
-        ? {
-            [payload.sort.field]: payload.sort.order,
-          }
-        : {},
-    };
+    let whereClause = this.buildWhereClause(payload.filters);
+    const orderBy = payload.sort ? `${payload.sort.field} ${payload.sort.order.toUpperCase()}` : 'id DESC';
 
-    if (payload.filters) {
-      if (payload.filters.entity) args.where!['entity'] = payload.filters.entity;
-      if (payload.filters.entityId) args.where!['entityId'] = payload.filters.entityId;
-      if (payload.filters.action) args.where!['action'] = payload.filters.action;
-      if (payload.filters.requestId) args.where!['requestId'] = payload.filters.requestId;
-      if (payload.filters.ip) args.where!['ip'] = payload.filters.ip;
-      if (payload.filters.master) args.where!['master'] = payload.filters.master;
-      if (payload.filters.actorId) args.where!['actorId'] = payload.filters.actorId;
-      if (payload.filters.from || payload.filters.to) {
-        args.where!['timestamp'] = {};
+    const cursorCondition = payload.cursor
+      ? `(${payload.sort!.field} ${payload.sort!.order === 'desc' ? '<' : '>'} (SELECT ${payload.sort!.field} FROM AuditLog WHERE id = '${payload.cursor}' LIMIT 1))`
+      : '';
 
-        if (payload.filters.from) args.where!['timestamp'].gte = payload.filters.from;
-        if (payload.filters.to) args.where!['timestamp'].lte = payload.filters.to;
+    if (cursorCondition) {
+      if (whereClause) {
+        whereClause += ` AND ${cursorCondition}`;
+      } else {
+        whereClause = `WHERE ${cursorCondition}`;
       }
     }
 
-    return await this.prismaClient.auditLog.findMany(args);
+    return await this.prismaClient.$queryRawUnsafe<AuditLogModel[]>(`
+      SELECT * FROM audit_logs
+      ${whereClause}
+      ORDER BY ${orderBy}
+      LIMIT ${payload.take + 1}
+    `);
   }
 
   async delete(id: string) {
@@ -75,5 +68,23 @@ export class AuditLogRepository extends BaseRepository {
         id,
       },
     });
+  }
+
+  buildWhereClause(filters: any): string {
+    const conditions = [];
+
+    if (filters?.entity) conditions.push(`entity = ${filters.entity}`);
+    if (filters?.entityId) conditions.push(`entityId = ${filters.entityId}`);
+    if (filters?.action) conditions.push(`action = ${filters.action}`);
+    if (filters?.from) conditions.push(`timestamp >= '${filters.from.toISOString()}'`);
+    if (filters?.to) conditions.push(`timestamp <= '${filters.to.toISOString()}'`);
+    if (filters?.fieldsChanged.length) {
+      conditions.push("action = 'UPDATE'");
+      filters.fieldsChanged.forEach((field: string) =>
+        conditions.push(`json_extract(diff, '$.${field}.new') IS NOT NULL`),
+      );
+    }
+
+    return conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
   }
 }

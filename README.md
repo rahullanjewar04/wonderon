@@ -107,32 +107,76 @@ The api can be tested using [rest client](https://marketplace.visualstudio.com/i
 
 Example cURL flows
 ------------------
-1) Create a book (authenticated) [route](src/api/v1/routes/book.ts)
+1. Login (get fresh token)
 ```bash
-curl -X POST http://localhost:3000/api/books \
-  -H "Authorization: Bearer <ADMIN_JWT>" \
+curl -X POST "http://localhost:1337/api/v1/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{"title":"Demo Book","authors":"Author A","publishedBy":"Publisher"}'
+  -d '{
+    "email": "admin1@example.com",
+    "credentials": "admin123"
+  }'
 ```
 
-1) Update a book [route](src/api/v1/controllers/book.ts)
+2. Get user profile
 ```bash
-curl -X PATCH http://localhost:3000/api/books/<BOOK_ID> \
-  -H "Authorization: Bearer <ADMIN_JWT>" \
+curl -X GET "http://localhost:1337/api/v1/me" \
+  -H "Authorization: Bearer REPLACE_TOKEN_HERE"
+```
+
+3. List books
+```bash
+curl -X GET "http://localhost:1337/api/v1/books?limit=5" \
+  -H "Authorization: Bearer REPLACE_TOKEN_HERE"
+```
+
+4. Get book by ID
+```bash
+curl -X GET "http://localhost:1337/api/v1/books/133f2e32-d3a5-4a74-85aa-31decd8b709d" \
+  -H "Authorization: Bearer REPLACE_TOKEN_HERE"
+```
+
+5. Create book
+```bash
+curl -X POST "http://localhost:1337/api/v1/books" \
+  -H "Authorization: Bearer REPLACE_TOKEN_HERE" \
   -H "Content-Type: application/json" \
-  -d '{"title":"Demo Book v2"}'
+  -d '{
+    "title": "manish",
+    "authors": "manish"
+  }'
 ```
 
-1) List audits (admin) [route](src/api/v1/routes/audit-log.ts)
+6. Update book
 ```bash
-curl "http://localhost:3000/api/audits?entity=book&limit=20" \
-  -H "Authorization: Bearer <ADMIN_JWT>"
+curl -X PATCH "http://localhost:1337/api/v1/books/e2392bcf-c755-4486-affc-7b97917eeb85" \
+  -H "Authorization: Bearer REPLACE_TOKEN_HERE" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "authors": "satish"
+  }'
 ```
 
-1) Get single audit record [route](src/repositories/audit-log.ts)
+7. Delete book
 ```bash
-curl http://localhost:3000/api/audits/<AUDIT_ID> \
-  -H "Authorization: Bearer <ADMIN_JWT>"
+curl -X DELETE "http://localhost:1337/api/v1/books/e92414d4-2282-4cac-933d-47bd3b1e7ab0" \
+  -H "Authorization: Bearer REPLACE_TOKEN_HERE"
+```
+
+8. List audits
+```bash
+curl -X GET "http://localhost:1337/api/v1/audits?limit=25&fieldsChanged=updatedBy" \
+  -H "Authorization: Bearer REPLACE_TOKEN_HERE"
+```
+
+9. Get audit by ID
+```bash
+curl -X GET "http://localhost:1337/api/v1/audits/88338282-b9b7-42fd-8837-32700df1a91a" \
+  -H "Authorization: Bearer REPLACE_TOKEN_HERE"
+```
+
+10. 404 test
+```bash
+curl -X GET "http://localhost:1337/nonexistent"
 ```
 
 Developer notes & important internals

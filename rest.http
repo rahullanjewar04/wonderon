@@ -43,18 +43,18 @@ Authorization: {{Admin1Authorization}}
 Content-Type: application/json
 
 {
-  "title":"from rest 2",
-  "authors": "rahul"
+  "title":"manish",
+  "authors": "manish"
 }
 ###
 
 # Update book
-PATCH {{bookEndpoint}}/63132424-3fb1-489f-9339-cccc9bdbe6ad HTTP/1.1
+PATCH {{bookEndpoint}}/e2392bcf-c755-4486-affc-7b97917eeb85 HTTP/1.1
 Authorization: {{Admin2Authorization}}
 Content-Type: application/json
 
 {
-  "title":"from api, updated new 1234"
+  "authors":"satish"
 }
 ###
 
@@ -64,6 +64,10 @@ Authorization: {{Admin2Authorization}}
 ###
 
 # Get Audits
-GET {{auditEndpoint}}?limit=25&cursor=243810f9-7f55-4a9c-b87b-eabe4ae17009
+GET {{auditEndpoint}}?limit=25&fieldsChanged=updatedBy HTTP/1.1
 Authorization: {{Admin1Authorization}}
 ###
+
+# Get Audit
+GET {{auditEndpoint}}/88338282-b9b7-42fd-8837-32700df1a91a HTTP/1.1
+Authorization: {{Admin1Authorization}}
