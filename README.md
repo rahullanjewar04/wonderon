@@ -18,9 +18,25 @@ Requirements
 - npm (or yarn)
 - (Optional) Docker if you prefer running a different DB than the default
 
-Rationale for DB choice
------------------------
-This repo includes Prisma and a `prisma/` folder; chosen SQLite for local ease-of-use (single-file DB, zero ops). SQLite is ideal for a demo: quick migrations, repeatable seeds, and no external dependencies. See [`prisma/schema.prisma`](prisma/schema.prisma).
+
+Rationale (made it simple due to time constraints)
+----------------------
+1. DB Choice
+This repo includes Prisma and a `prisma/` folder; chosen SQLite for local
+ease-of-use (single-file DB, zero ops). SQLite is ideal for a demo: quick migrations, repeatable seeds, and no external dependencies. See [`prisma/schema.prisma`](prisma/schema.prisma).
+
+2. Soft delete vs hard delete
+Kept it as soft delete for recovery, can be permanently deleted using cron after set time if no recovery is made. Also helps in audit logging.
+
+3. Pino is setup for json logging to sdtout, and also can be extended to other ingest sources by configuring [config](config.json). Audit logs are in place, uses async local storage and adds required data in db.
+
+4. Kept auth and rbac simple, rbac can be made hierarchial in production use cases. Maybe we can use casbin/permify for rbac. Auth needs to be more secure, need to use accessToken + refreshToken with statefullness for server control
+
+5. Overall setup uses singleton and dependency injection patterns, it can be modified more to be more scalable.
+
+6. Using zod for input validation, have separate client and server schemas so both can be validated individually.
+
+7. Kept it simple due to time constraint.
 
 Setup (local)
 -------------
@@ -29,31 +45,36 @@ Setup (local)
 npm install
 ```
 
-2. Copy env example and edit if desired [example env](.env.example)
+1. Copy env example and edit if desired [example env](.env.example)
 ```bash
 cp .env.example .env
 # Edit .env if you want to change log transports or DB URL
 ```
 
-3. Copy config example and edit if desired [example config](config.example.json)
+1. Copy config example and edit if desired [example config](config.example.json)
 ```bash
 cp config.example.json config.json
 # Edit .env if you want to change log transports or DB URL
 ```
 
-4. Run migrations and seed the DB
+1. Run migrations and seed the DB
 ```bash
 npx prisma migrate deploy
 node ./dist/migrations/seed.js   # or `npm run seed` if a script exists
 ```
 (Alternatively run the TypeScript seed script during development: `ts-node src/migrations/seed.ts`)
 
-5. Start the dev server
+1. Start the docker compose (uses redis for rate limiting, could have been simpler with in memory counter)
+```bash
+docker compose up -d
+```
+
+1. Start the dev server
 ```bash
 npm run dev
 ```
 
-6. Launch Prisma studio for verifying data in database.
+1. Launch Prisma studio for verifying data in database.
 ```bash
 npx prisma studio
 ```
@@ -185,3 +206,50 @@ Developer notes & important internals
 - Logger is pino-based with transport builders in [`src/utils/logger/transports/`](src/utils/logger/transports/logtail.ts), [`src/utils/logger/transports/file.ts`](src/utils/logger/transports/file.ts), [`src/utils/logger/transports/elastic-search.ts`](src/utils/logger/transports/elastic-search.ts).
 - Audit creation points are in services and repository hooks; see [`src/services/audit-log.ts`](src/services/audit-log.ts).
 - Centralized error handling: [`src/api/common/middlewares/error-handler.ts`](src/api/common/middlewares/error-handler.ts).
+
+Additional notes — implemented vs missing
+----------------------------------------
+Implemented (high level):
+- Config-driven audit config [`src/utils/audit.ts`](src/utils/audit.ts:18) with redact/exclude.
+- AsyncLocalStorage request context [`src/api/common/middlewares/request-context.ts`](src/api/common/middlewares/request-context.ts:1) and logger integration [`src/utils/logger/index.ts`](src/utils/logger/index.ts:1).
+- Pino logger with file transport and code paths for `logtail` and `elasticsearch` in [`src/utils/logger/transports/`](src/utils/logger/transports/logtail.ts:1).
+
+Missing / incomplete due to time constraints:
+1. Admin RBAC enforcement on audit routes
+   - The audit router [`src/api/v1/routes/audit-log.ts`](src/api/v1/routes/audit-log.ts:1) currently registers GET endpoints but does not apply the admin middleware (`src/api/v1/middlewares/admin.ts`). This allows non-admin users to reach audit endpoints.
+2. Robust audit query/filter/pagination implementation
+   - The repository [`src/repositories/audit-log.ts`](src/repositories/audit-log.ts:1) builds raw SQL via `$queryRawUnsafe` and contains unquoted string interpolation (risking SQL injection), brittle cursor logic, and limited handling of filters (`fieldsChanged` checking assumes array presence). Replace with Prisma-query-based filters and safe cursor pagination.
+3. Consistent entity naming between config and runtime
+   - `auditConfig` keys are lowercase (`book`, `user`) but other parts of the codebase and Prisma models may use PascalCase (`Book`, `User`). Add a canonical mapping or normalize keys when evaluating the config.
+4. Diff generation and redaction guarantees
+   - Ensure the audit service produces a stable diff format (JSON Patch or before/after) and that redact/exclude rules are consistently applied to nested paths. The current code references a `deep-diff` utility but requires tests and edge-case handling (arrays, nulls, nested objects).
+5. Input validation & security hardening
+   - Few endpoints show explicit validation (zod/class-validator). Add request validation schemas to prevent malformed inputs and avoid logging secrets.
+6. Integration tests & unit tests
+   - No automated tests included. Add tests covering audit creation for create/update/delete flows, RBAC, and filter behaviors.
+7. Soft-delete vs hard-delete policy & justification
+   - The assignment requires justifying delete strategy. The README doesn't document whether books are soft-deleted or hard-deleted; implement soft-delete (recommended) or document the chosen approach and ensure audits record deletes.
+8. Log sink configuration secrets & examples
+   - While code paths exist for Logtail/Elasticsearch sinks, the README lacks exact env variable keys and example config to enable them; add examples and required credentials to `config.example.json`.
+9. Exporting / archiving audits & retention
+   - No export or retention policies implemented. For production, add an export endpoint or background job and retention rules.
+10. CI / Docker run instructions
+    - `docker-compose.yaml` exists, but README does not include explicit steps to run the app via Docker / Docker Compose (migrations, seeding, env config). Add a short section.
+
+How to verify critical behaviors locally
+-------------------------------------
+1. Start the app (dev)
+   - npm install && cp .env.example .env && cp config.example.json config.json
+   - npm run dev
+2. Seed & view users
+   - Run the seed: `ts-node src/migrations/seed.ts` or `node ./dist/migrations/seed.js`
+   - Note the printed sample admin/reviewer tokens and use them in Authorization header.
+3. Create / update / delete a book and confirm an audit record is created
+   - Use the example cURL flows above. Then query audits (admin) to confirm the audit event and that redact/exclude rules were applied.
+
+Known issues and next steps
+--------------------------
+- Replace `$queryRawUnsafe` in `src/repositories/audit-log.ts` with parameterized Prisma queries.
+- Normalize audit config keys and improve tests for redaction/exclusion.
+- Add validation middleware (zod) to controllers.
+- Protect audit endpoints with admin middleware.
