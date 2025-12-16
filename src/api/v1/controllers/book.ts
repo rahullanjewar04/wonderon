@@ -131,7 +131,7 @@ export class BookController extends BaseController {
     await this.bookService.softDelete(id);
 
     // Send the response
-    res.status(200).send({ ok: true });
+    res.status(200).json({ ok: true });
   }
 
   /**

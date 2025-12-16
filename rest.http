@@ -59,7 +59,7 @@ Content-Type: application/json
 ###
 
 # Delete book
-DELETE {{bookEndpoint}}/e92414d4-2282-4cac-933d-47bd3b1e7ab0 HTTP/1.1
+DELETE {{bookEndpoint}}/594ea7f4-91a8-4949-ad3d-424e9368ed80 HTTP/1.1
 Authorization: {{Admin2Authorization}}
 ###
 
